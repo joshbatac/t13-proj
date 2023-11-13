@@ -26,6 +26,7 @@ app.use((req, res, next) => {
   res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   next();
 });
+app.use(express.json());
 
 //test database on render
 app.get('/', (req, res) => {
@@ -49,13 +50,80 @@ app.get('/inventory', (req, res) => {
     }
 
     const inventory = results.map(item => ({
-      ingredientID: item.ingredientID,
-      ingredientName: item.ingredientName,
+      ID: item.ID,
+      name: item.name,
+      supplierID: item.supplierID,
       currentStorage: item.currentStorage,
-      maxStorage: item.maxStorage
+      maxStorage: item.maxStorage,
+      price: item.price,
     }));
 
     res.json({ inventory });
+  });
+});
+
+app.get('/orders', (req, res) => {
+  db.query('SELECT * FROM orders', (error, results) => {
+    if (error) {
+      console.error('Error in query:', error);
+      res.status(500).send('Error in database query');
+      return;
+    }
+
+    const orders = results.map(item => ({
+      ID: item.ID,
+      CustomerID: item.CustomerID,
+      orderDate: item.orderDate,
+      totalOwed: item.totalOwed,
+      totalPaid: item.totalPaid,
+      paymentType: item.paymentType,
+    }));
+
+    res.json({ orders });
+  });
+});
+app.post('/orders-insert', (req, res) => {
+
+  const { customerID, orderDate, totalOwed, totalPaid, paymentType } = req.body;
+  const sql = 'INSERT INTO orders (customerID, orderDate, totalOwed, totalPaid, paymentType) VALUES (?, ?, ?, ?, ?)';
+  
+  db.query(sql, [customerID, orderDate, totalOwed, totalPaid, paymentType], (error, results) => {
+    if (error) {
+      console.error('Error inserting into orders:', error);
+      res.status(500).json({ error: 'Error inserting into orders' });
+    } else {
+      // Return the inserted row data (including the auto-generated orderID)
+      const insertedOrder = {
+        orderID: results.insertId,
+        customerID,
+        orderDate,
+        totalOwed,
+        totalPaid,
+        paymentType,
+      };
+      res.status(200).json({ message: 'Order inserted successfully', order: insertedOrder });
+    }
+  });
+});
+
+
+
+app.get('/orderitems', (req, res) => {
+  db.query('SELECT * FROM orderitems', (error, results) => {
+    if (error) {
+      console.error('Error in query:', error);
+      res.status(500).send('Error in database query');
+      return;
+    }
+
+    const orderItems = results.map(item => ({
+      ID: item.ID,
+      orderID: item.orderID,
+      inventoryID: item.inventoryID,
+      quantity: item.quantity
+    }));
+
+    res.json({ orderItems });
   });
 });
 

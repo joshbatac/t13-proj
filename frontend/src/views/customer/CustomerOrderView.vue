@@ -12,7 +12,7 @@
   
         <!-- Basket component on the right -->
         <div class="basket">
-          <Basket :items="basketItems" @removeItem="removeItemFromBasket" />
+          <Basket :items="basketItems" @removeItem="removeItemFromBasket" @fullRemove = "fullRemove"/>
         </div>
       </div>
     </div>
@@ -42,13 +42,16 @@
           existingItem[1]++;
         } else {
           // If the item doesn't exist, add it with a quantity of 1
-          this.basketItems.push([item, 1]);
+          this.basketItems.unshift([item, 1]);
         }
       },
       removeItemFromBasket(index, item) {
         // Remove the specified item from the basket
         this.basketItems.splice(index, 1);
       },
+      fullRemove() {
+        this.basketItems.length = 0;
+      }
     },
   };
   </script>
