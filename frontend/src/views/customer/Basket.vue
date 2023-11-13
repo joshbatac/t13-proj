@@ -21,7 +21,15 @@
     :total="calculateRunningTotal()"
     :items="this.items"
     @confirmed="checkout" 
-b   @canceled="hideConfirmation" />
+    @canceled="hideConfirmation" />
+
+    <Receipt
+    v-if ="confirmationCompleted"
+    :total="calculateRunningTotal()"
+    :items="this.items"
+    :orderData = "this.orderData"
+    @leave="finished()"/>
+
   </div>
 </template>
 
@@ -29,13 +37,13 @@ b   @canceled="hideConfirmation" />
 
 import axios from 'axios';
 import ConfirmationPopUp from './ConfirmationPopUp.vue';
-
+import Receipt from './Receipt.vue';
 export default {
 
   components: {
     ConfirmationPopUp,
+    Receipt
   },
-
 
   props: {
     items: Array, // item, quantity
@@ -44,6 +52,8 @@ export default {
   data() {
     return {
       showPopup: false, //for popup
+      confirmationCompleted: false,
+      orderData: null
     };
   },
 
@@ -57,7 +67,13 @@ export default {
       }
     },
   
-    showConfirmation() {  this.showPopup = true; }, hideConfirmation() { this.showPopup = false; },
+    showConfirmation() { 
+      this.showPopup = true; 
+    }, 
+    
+    hideConfirmation() { 
+      this.showPopup = false; 
+    },
 
     async checkout(pt) {
       try {
@@ -69,7 +85,8 @@ export default {
           paymentType: pt, // default value for testing
         });
         
-        const orderID = orderResponse.data.order.orderID //get orderID from backend 
+        const _orderID = orderResponse.data.order.orderID //get orderID from backend 
+        this.orderData = orderResponse.data.order
         console.log('Order inserted successfully:', orderResponse.data); 
 
         // loop through and insert into OrderItems
@@ -77,7 +94,7 @@ export default {
           this.items.forEach(async ([item, quantity]) => {
             try {
               const orderItemResponse = await axios.post('http://localhost:3000/orderitems-insert', {
-                orderID: orderID,
+                orderID: _orderID,
                 inventoryID: item.ID, //
                 quantity: quantity,
               });
@@ -88,7 +105,7 @@ export default {
           });
         
         this.hideConfirmation(); //Hide the confirmation pop-up after checkout
-        this.$emit('fullRemove'); //clear the basket
+        this.confirmationCompleted = true
 
       } catch (error) {
         console.error('Error processing checkout:', error);
@@ -99,6 +116,13 @@ export default {
       const rawTotal = this.items.reduce((total, [item, quantity]) => total + quantity * item.price, 0);
       return rawTotal.toFixed(2);    
     },
+
+    finished() {
+      this.showPopup = false, //for popup
+      this.confirmationCompleted = false,
+      this.orderData = null
+      this.$emit('fullRemove');
+    }
 
   },
 

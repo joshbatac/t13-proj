@@ -15,6 +15,8 @@
           <Basket :items="basketItems" @removeItem="removeItemFromBasket" @fullRemove = "fullRemove"/>
         </div>
       </div>
+
+      
     </div>
   </template>
   
