@@ -1,12 +1,10 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import NotFound from '../views/NotFound.vue'
-import HomeView from '../views/HomeView.vue'
-import AboutView from '../views/AboutView.vue'
+import NotFound from '../views/general/NotFound.vue'
+import HomeView from '../views/general/HomeView.vue'
+import AboutView from '../views/general/AboutView.vue'
 import InventoryView from '../views/manager/InventoryView.vue'
 import EmploymentView from '../views/manager/EmploymentView.vue'
 import CustomerOrderView from '../views/customer/CustomerOrderView.vue'
-
-
 
 const routes = [
   {
@@ -33,8 +31,7 @@ const routes = [
     name: 'customer-order',
     component: CustomerOrderView
   },
-  //404
-  {
+  { //404
     path: '/:catchAll(.*)',
     name: 'notFound',
     component: NotFound

@@ -2,6 +2,7 @@
 <template>
   <div class="basket-container">
     <h3>Basket</h3>
+
     <!-- Display items and quantities in the basket -->
     <ul>
       <li v-for="(item, index) in items" :key="item[0].ID" @click="removeItem(index, item[0])"> 
@@ -9,21 +10,18 @@
       </li>
     </ul>
 
-    <!-- Add Check Out button with v-if -->
+    <!--CheckOut Button-->
     <button v-if="items.length > 0" @click="showConfirmation" class="checkout-button">
       Check Out - Total: {{ calculateRunningTotal() }}
     </button>
 
-    <!-- Add the confirmation pop-up component -->
+    <!--Confirmation Pop-up -->
     <ConfirmationPopUp 
     v-if="showPopup" 
     :total="calculateRunningTotal()"
     :items="this.items"
     @confirmed="checkout" 
-    @canceled="hideConfirmation" />
-
-
-
+b   @canceled="hideConfirmation" />
   </div>
 </template>
 
@@ -33,12 +31,12 @@ import axios from 'axios';
 import ConfirmationPopUp from './ConfirmationPopUp.vue';
 
 export default {
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
+
   components: {
     ConfirmationPopUp,
   },
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
+
   props: {
     items: Array, // item, quantity
   },
@@ -49,7 +47,7 @@ export default {
     };
   },
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
+
   methods: {
     removeItem(index, item) {
       if (this.items[index][1] > 1) { // Decrement the quantity if it's greater than 1
@@ -61,18 +59,18 @@ export default {
   
     showConfirmation() {  this.showPopup = true; }, hideConfirmation() { this.showPopup = false; },
 
-    async checkout() {
+    async checkout(pt) {
       try {
         const orderResponse = await axios.post('http://localhost:3000/orders-insert', {// Insert the order into the Orders table
           customerID: null, // default value for testing 
           orderDate: new Date().toISOString().split('T')[0], // Get current date in YYYY-MM-DD format
           totalOwed: this.calculateRunningTotal(),
           totalPaid: 0, // default value for testing
-          paymentType: 'Not Paid', // default value for testing
+          paymentType: pt, // default value for testing
         });
         
         const orderID = orderResponse.data.order.orderID //get orderID from backend 
-        console.log('Order inserted successfully:', orderID); 
+        console.log('Order inserted successfully:', orderResponse.data); 
 
         // loop through and insert into OrderItems
 
@@ -83,7 +81,7 @@ export default {
                 inventoryID: item.ID, //
                 quantity: quantity,
               });
-              console.log('Item inserted successfully:', orderItemResponse.data.item);
+              console.log('Item inserted successfully:', orderItemResponse.data);
             } catch (itemError) {
               console.error('Error inserting item:', itemError);
             }
@@ -146,7 +144,6 @@ li:hover {
   transition: background-color 0.3s;
   margin: 0.5%;
 }
-
 .checkout-button:hover {
   background-color: #357e68;
 }

@@ -1,6 +1,5 @@
 # t13-proj
 
-
 2 terminals
 
 terminal 1: frontend

@@ -20,15 +20,14 @@ db.getConnection((err, connection) => {
   connection.release();
 });
 
+app.use(express.json());
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
   res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   next();
 });
-app.use(express.json());
 
-//test database on render
 app.get('/', (req, res) => {
   db.query('SHOW TABLES', (error, results) => {
     if (error) {
@@ -62,7 +61,6 @@ app.get('/inventory', (req, res) => {
   });
 });
 
-
 app.get('/orders', (req, res) => {
   db.query('SELECT * FROM orders', (error, results) => {
     if (error) {
@@ -83,6 +81,7 @@ app.get('/orders', (req, res) => {
     res.json({ orders });
   });
 });
+
 app.post('/orders-insert', (req, res) => {
 
   const { customerID, orderDate, totalOwed, totalPaid, paymentType } = req.body;
@@ -106,7 +105,6 @@ app.post('/orders-insert', (req, res) => {
     }
   });
 });
-
 
 app.get('/orderitems', (req, res) => {
   db.query('SELECT * FROM orderitems', (error, results) => {
