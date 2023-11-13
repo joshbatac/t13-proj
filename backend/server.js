@@ -62,6 +62,7 @@ app.get('/inventory', (req, res) => {
   });
 });
 
+
 app.get('/orders', (req, res) => {
   db.query('SELECT * FROM orders', (error, results) => {
     if (error) {
@@ -107,7 +108,6 @@ app.post('/orders-insert', (req, res) => {
 });
 
 
-
 app.get('/orderitems', (req, res) => {
   db.query('SELECT * FROM orderitems', (error, results) => {
     if (error) {
@@ -124,6 +124,26 @@ app.get('/orderitems', (req, res) => {
     }));
 
     res.json({ orderItems });
+  });
+});
+
+app.post('/orderitems-insert', (req, res) => {
+  const { orderID, inventoryID, quantity } = req.body;
+  const sql = 'INSERT INTO orderitems (orderID, inventoryID, quantity) VALUES (?, ?, ?)';
+
+  db.query(sql, [orderID, inventoryID, quantity], (error, results) => {
+    if (error) {
+      console.error('Error inserting into orderitems:', error);
+      res.status(500).json({ error: 'Error inserting into orderitems' });
+    } else {
+      // Return the inserted row data
+      const insertedItem = {
+        orderID,
+        inventoryID,
+        quantity,
+      };
+      res.status(200).json({ message: 'Item inserted successfully', item: insertedItem });
+    }
   });
 });
 

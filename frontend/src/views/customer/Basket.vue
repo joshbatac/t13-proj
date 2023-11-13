@@ -48,7 +48,7 @@ export default {
       showPopup: false, //for popup
     };
   },
-  
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
   methods: {
     removeItem(index, item) {
@@ -75,11 +75,19 @@ export default {
         console.log('Order inserted successfully:', orderID); 
 
         // loop through and insert into OrderItems
-          this.items.forEach(([item, quantity]) => {
-            console.log( orderID, `ID: ${item.ID} Item: ${item.name}, Quantity: ${quantity}`);
+
+          this.items.forEach(async ([item, quantity]) => {
+            try {
+              const orderItemResponse = await axios.post('http://localhost:3000/orderitems-insert', {
+                orderID: orderID,
+                inventoryID: item.ID, //
+                quantity: quantity,
+              });
+              console.log('Item inserted successfully:', orderItemResponse.data.item);
+            } catch (itemError) {
+              console.error('Error inserting item:', itemError);
+            }
           });
-
-
         
         this.hideConfirmation(); //Hide the confirmation pop-up after checkout
         this.$emit('fullRemove'); //clear the basket
