@@ -8,7 +8,7 @@
         <h2> "Embrace the joy of shopping, confirm your choices, and let the adventure begin!" </h2>
         <hr>
         <ul>
-            <li v-for="(item, index) in items" :key="item[0].ID">
+            <li v-for="(item, index) in items" :key="index">
                 ( x{{ item[1] }} ){{ item[0].name }}  - ${{ (item[1] * item[0].price).toFixed(2) }}
             </li>
         </ul>

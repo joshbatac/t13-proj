@@ -2,8 +2,27 @@
 
 <template>
     <div class="customer-order-view">
-      <h1>Customer Order View</h1>
-  
+
+      <div v-if="!customerName">
+        <h1>
+        Not a Member? Sign up Here!
+
+        <div class = "h1-sub">
+          <label for="phoneNumber">Already a member? Enter your phone number: </label>
+          <br>
+          <input 
+            class = "input-num" 
+            type="text" 
+            id="phoneNumber" 
+            v-model="phoneNumber"
+            @keyup.enter="enterKey">
+        </div>
+      </h1>
+      </div>
+      <div v-else>
+        <h1>{{ customerName }}</h1>
+      </div>
+
       <div class="content-container">
         <!-- Order buttons component on the left -->
         <div class="order-buttons">
@@ -32,6 +51,8 @@
     data() {
       return {
         basketItems: [], // Now an array of pairs [item, quantity]
+        customerName: null,
+        phoneNumber: null,
       };
     },
     methods: {
@@ -47,13 +68,21 @@
           this.basketItems.unshift([item, 1]);
         }
       },
+
       removeItemFromBasket(index, item) {
         // Remove the specified item from the basket
         this.basketItems.splice(index, 1);
       },
+
       fullRemove() {
         this.basketItems.length = 0;
+      },
+
+      enterKey() {
+        console.log (this.phoneNumber)
+        this.phoneNumber = null;
       }
+
     },
   };
   </script>
@@ -65,6 +94,31 @@
   
   h1 {
     margin-bottom: 20px; /* Add margin below h1 for separation */
+  }
+
+  .h1-sub {
+    font-size: 14px;
+    font-style: italic;
+    padding-top:10px;
+    padding-bottom: 0px;
+  }
+
+  .input-num{ 
+    text-align: center;
+    padding: 5px;
+    font-size: 14px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+background-color: #28745283; /* Background color for h1 */
+    color: #ddd;
+    font-style: oblique;
+    appearance: none; /* Remove default arrow in Firefox */
+    cursor: pointer;
+  }
+
+  .input-num:hover {
+    border-color: #42b983;
+
   }
   
   .content-container {
