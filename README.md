@@ -1,4 +1,4 @@
-# t13-proj
+# Team 13 Point of Sales Project
 
 2 terminals
 
