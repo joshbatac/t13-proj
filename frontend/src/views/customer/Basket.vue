@@ -5,30 +5,37 @@
 
     <!-- Display items and quantities in the basket -->
     <ul>
-      <li v-for="(item, index) in items" :key="item[0].ID" @click="removeItem(index, item[0])"> 
-        ( x{{ item[1] }} ) {{ item[0].name }}  - ${{ (item[1] * item[0].price).toFixed(2) }}
-      </li>
+      <div v-if="!customerID">
+        <li v-for="(item, index) in items" :key="item[0].ID" @click="removeItem(index, item[0])">
+          ( x{{ item[1] }} ) {{ item[0].name }} - ${{ (item[1] * item[0].price).toFixed(2) }}
+        </li>
+      </div>
+      <div v-else>
+        <li v-for="(item, index) in items" :key="item[0].ID" @click="removeItem(index, item[0])">
+          ( x{{ item[1] }} ) {{ item[0].name }} -
+  <del style="color: red;">${{ (item[1] * item[0].price).toFixed(2) }}</del>
+  ${{ (item[1] * item[0].price * 0.9).toFixed(2) }}        </li>
+
+      </div>
+
     </ul>
 
     <!--CheckOut Button-->
     <button v-if="items.length > 0" @click="showConfirmation" class="checkout-button">
-      Check Out - Total: {{ calculateRunningTotal() }}
+      <div v-if="!customerID ">
+        Check Out - Total: ${{ calculateRunningTotal() }}
+      </div>
+      <div v-else>
+        Check Out - Total: <s style="text-decoration: line-through; color: red;">${{ calculateRunningTotal() }}</s> ${{ (calculateRunningTotal() * 0.9).toFixed(2) }}
+      </div>
     </button>
 
     <!--Confirmation Pop-up -->
-    <ConfirmationPopUp 
-    v-if="showPopup" 
-    :total="calculateRunningTotal()"
-    :items="this.items"
-    @confirmed="checkout" 
-    @canceled="hideConfirmation" />
+    <ConfirmationPopUp v-if="showPopup" :total="calculateRunningTotal()" :items="this.items" @confirmed="checkout"
+      @canceled="hideConfirmation" />
 
-    <Receipt
-    v-if ="confirmationCompleted"
-    :total="calculateRunningTotal()"
-    :items="this.items"
-    :orderData = "this.orderData"
-    @leave="finished()"/>
+    <Receipt v-if="confirmationCompleted" :total="calculateRunningTotal()" :items="this.items" :orderData="this.orderData"
+      @leave="finished()" />
 
   </div>
 </template>
@@ -47,6 +54,7 @@ export default {
 
   props: {
     items: Array, // item, quantity
+    customerID: Number,
   },
 
   data() {
@@ -66,13 +74,13 @@ export default {
         this.$emit('removeItem', index, item);
       }
     },
-  
-    showConfirmation() { 
-      this.showPopup = true; 
-    }, 
-    
-    hideConfirmation() { 
-      this.showPopup = false; 
+
+    showConfirmation() {
+      this.showPopup = true;
+    },
+
+    hideConfirmation() {
+      this.showPopup = false;
     },
 
     async checkout(pt) {
@@ -84,26 +92,26 @@ export default {
           totalPaid: 0, // default value for testing
           paymentType: pt, // default value for testing
         });
-        
+
         const _orderID = orderResponse.data.order.orderID //get orderID from backend 
         this.orderData = orderResponse.data.order
-        console.log('Order inserted successfully:', orderResponse.data); 
+        console.log('Order inserted successfully:', orderResponse.data);
 
         // loop through and insert into OrderItems
 
-          this.items.forEach(async ([item, quantity]) => {
-            try {
-              const orderItemResponse = await axios.post('http://localhost:3000/orderitems-insert', {
-                orderID: _orderID,
-                inventoryID: item.ID, //
-                quantity: quantity,
-              });
-              console.log('Item inserted successfully:', orderItemResponse.data);
-            } catch (itemError) {
-              console.error('Error inserting item:', itemError);
-            }
-          });
-        
+        this.items.forEach(async ([item, quantity]) => {
+          try {
+            const orderItemResponse = await axios.post('http://localhost:3000/orderitems-insert', {
+              orderID: _orderID,
+              inventoryID: item.ID, //
+              quantity: quantity,
+            });
+            console.log('Item inserted successfully:', orderItemResponse.data);
+          } catch (itemError) {
+            console.error('Error inserting item:', itemError);
+          }
+        });
+
         this.hideConfirmation(); //Hide the confirmation pop-up after checkout
         this.confirmationCompleted = true
 
@@ -114,13 +122,13 @@ export default {
 
     calculateRunningTotal() { // Calculate the running total
       const rawTotal = this.items.reduce((total, [item, quantity]) => total + quantity * item.price, 0);
-      return rawTotal.toFixed(2);    
+      return rawTotal.toFixed(2);
     },
 
     finished() {
       this.showPopup = false, //for popup
-      this.confirmationCompleted = false,
-      this.orderData = null
+        this.confirmationCompleted = false,
+        this.orderData = null
       this.$emit('fullRemove');
     }
 
@@ -148,7 +156,7 @@ ul {
 li {
   margin-bottom: 5px;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: background-color 0.15s;
 }
 
 li:hover {
@@ -165,9 +173,10 @@ li:hover {
   border: none;
   cursor: pointer;
   border-radius: 8px;
-  transition: background-color 0.3s;
+  transition: background-color 0.15s;
   margin: 0.5%;
 }
+
 .checkout-button:hover {
   background-color: #357e68;
 }
