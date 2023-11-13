@@ -76,7 +76,7 @@
         padding: 20px;
         border-radius: 8px;
         text-align: center;
-    z-index: 1; /* Ensure the pop-up is on top of the overlay */
+        z-index: 1; /* Ensure the pop-up is on top of the overlay */
     }
 
     h1 {
@@ -169,8 +169,7 @@
     margin: 0;
   }
 
-  /* Optionally hide other elements you don't want to appear in print */
-  /* For example, you can add a class to elements you want to hide and use display: none */
+
   .hide-in-print {
     display: none;
   }
