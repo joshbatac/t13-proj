@@ -149,39 +149,6 @@
 
   @page {
     size: auto; /* Use the full page size */
-    margin: 10mm; /* Set margins to 0 */
-  }
-
-  /* Hide default printer header and footer */
-  @page :first {
-    margin-top: 0;
-  }
-
-  @page :left {
-    margin-left: 0;
-  }
-
-  @page :right {
-    margin-right: 0;
-  }
-
-  @page :blank {
-    margin: 0;
-  }
-
-  /* Optionally hide other elements you don't want to appear in print */
-  /* For example, you can add a class to elements you want to hide and use display: none */@media print {
-  body {
-    font-family: Arial, sans-serif;
-  }
-
-  .print-button,
-  .leave-button {
-    display: none; /* Hide buttons when printing */
-  }
-
-  @page {
-    size: auto; /* Use the full page size */
     margin: 0; /* Set margins to 0 */
   }
 
@@ -207,7 +174,6 @@
   .hide-in-print {
     display: none;
   }
-}
 }
 
   </style>
