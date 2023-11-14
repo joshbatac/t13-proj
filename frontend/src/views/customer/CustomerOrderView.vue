@@ -5,9 +5,11 @@
 
     <div v-if="!customerName">
       <h1>
-        Not a Member? Sign up HERE and get 10% off!
+        Not a Member? Sign up Here!
+
         <div class="h1-sub">
           <label for="phoneNumber">Already a member? Enter your phone number:</label>
+          <br>
           <br>
           <input class="input-num" type="text" id="phoneNumber" v-model="phoneNumber" @keyup.enter="checkMember">
         </div>
@@ -17,8 +19,8 @@
       <h1>
         Welcome Back... {{ customerName }}!
         <br>
-        <div class="belowCustomerTitle" @click="editCustomerProfile">EDIT PROFILE</div>
-        <div class="belowCustomerTitle" @click="signOut"> SIGN OUT</div>
+        <div class="belowWelcome" @click="customerInfoModBoolChange()">EDIT PROFILE</div> &nbsp &nbsp
+        <div class="belowWelcome" @click="signOut"> SIGN OUT</div>
 
       </h1>
     </div>
@@ -31,11 +33,20 @@
 
       <!-- Basket component on the right -->
       <div class="basket">
-        <Basket :items="basketItems" :customerID="this.customerID" @removeItem="removeItemFromBasket"
-          @fullRemove="fullRemove" />
+        <Basket 
+        :items="basketItems" 
+        :customerID = "this.customerID"
+        @removeItem="removeItemFromBasket" 
+        @fullRemove="fullRemove" />
       </div>
     </div>
 
+
+    <customerInfoMod
+      v-if="customerInfoModBool"
+      @boolChange = "customerInfoModBoolChange"
+      :customerName = "this.customerName"
+    />
 
   </div>
 </template>
@@ -43,12 +54,14 @@
 <script>
 import OrderButtons from './OrderButtons.vue';
 import Basket from './Basket.vue';
+import CustomerInfoMod from './CustomerInfoMod.vue';
 import axios from 'axios';
 
 export default {
   components: {
     OrderButtons,
     Basket,
+    CustomerInfoMod,
   },
   data() {
     return {
@@ -56,6 +69,7 @@ export default {
       customerName: null,
       customerID: 0,
       phoneNumber: null,
+      customerInfoModBool: false,
     };
   },
   methods: {
@@ -91,17 +105,12 @@ export default {
           const { ID, fName, lName } = response.data;
           this.customerName = `${fName} ${lName}`;
           console.log('Customer ID:', ID);
-          this, this.customerID = ID;
+          this,this.customerID = ID;
         } catch (error) {
           console.error('Error checking phone number:', error);
 
         }
       }
-    },
-    editCustomerProfile() {
-
-      console.log("edit profile clicked")
-
     },
 
     signOut() {
@@ -109,6 +118,9 @@ export default {
       this.customerName = null;
       this.customerID = 0;
 
+    },
+    customerInfoModBoolChange() {
+      this.customerInfoModBool = !(this.customerInfoModBool)
     }
   },
 };
@@ -171,10 +183,10 @@ h1 {
 }
 
 
-.belowCustomerTitle {
+.belowWelcome {
   display: inline-block;
   text-align: center;
-  font-size: 14px;
+  font-size: 16px;
   border-radius: 8px;
   color: gray;
   font-style: oblique;
@@ -184,7 +196,7 @@ h1 {
   margin-top: 0;
 }
 
-.belowCustomerTitle:hover {
+.belowWelcome:hover {
   color: white;
 }
 </style>
