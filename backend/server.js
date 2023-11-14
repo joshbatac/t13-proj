@@ -1,13 +1,15 @@
+require('dotenv').config();
 const express = require("express");
 const mysql = require("mysql");
 const app = express();
 
 const db = mysql.createPool({
   connectionLimit: 10,
-  host: "team13-point-of-sales.mysql.database.azure.com",
-  user: "team13admin",
-  password: "Password!",
-  database: "pos",
+  connectionLimit: 10,
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_DATABASE,
 });
 
 // Checking if the pool is valid
@@ -104,12 +106,10 @@ app.post("/orders-insert", (req, res) => {
           totalPaid,
           paymentType,
         };
-        res
-          .status(200)
-          .json({
-            message: "Order inserted successfully",
-            order: insertedOrder,
-          });
+        res.status(200).json({
+          message: "Order inserted successfully",
+          order: insertedOrder,
+        });
       }
     }
   );
