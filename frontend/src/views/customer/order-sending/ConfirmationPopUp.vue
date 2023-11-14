@@ -1,4 +1,3 @@
-<!-- ConfirmationPopUp.vue -->
 <template>
   <div class="confirmation-popup">
     <div class="popup-overlay"></div>

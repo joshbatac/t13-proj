@@ -1,4 +1,3 @@
-<!-- Basket.vue -->
 <template>
   <div class="basket-container">
     <h3>Basket</h3>
@@ -81,8 +80,10 @@ export default {
     removeItem(index, item) {
       if (this.items[index][1] > 1) { // Decrement the quantity if it's greater than 1
         this.items[index][1]--;
+        this.$emit('increaseCurrStorage',item);
       } else { // If the quantity is 1, remove the entire item
         this.$emit('removeItem', index, item);
+        this.$emit('increaseCurrStorage',item);
       }
     },
 

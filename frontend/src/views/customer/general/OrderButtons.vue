@@ -1,11 +1,22 @@
-<!-- OrderButtons.vue -->
-
 <template>
   <div class="order-buttons">
     <h3>Our Products</h3>
     <!-- Buttons to add items to the basket -->
-    <button v-for="item in inventory" :key="item.ID" class="grid-button" @click="addToBasket(item)" >
-      {{ item.name }} - Price: ${{ item.price }}
+    <button 
+      v-for="item in inventory" 
+      :key="item.ID" 
+      class="grid-button" 
+      @mouseenter="showDetails(item)"
+      @mouseleave="hideDetails"
+      @click="addToBasket(item)" 
+    >
+
+      <div v-if="hoveredItem === item.ID" class="item-details">
+        {{ item.currentStorage }} / {{ item.maxStorage }} left 
+      </div>
+      <div v-else>       
+        {{ item.name }} - Price: ${{ item.price }}
+      </div>
     </button>
   </div>
 </template>
@@ -15,27 +26,36 @@ import axios from 'axios';
 
 
 export default {
-
+  props: {
+    inventory: Array,
+  },
   data() {
     return {
-      inventory: [],
+      hoveredItem: null,
     };
   },
 
-
+/*
   mounted() {
     axios.get('http://localhost:3000/inventory')
       .then(response => {
         this.inventory = response.data.inventory; // Assuming the response contains an array of inventory items
-        this.originalInv = this.inventory;
       })
       .catch(error => {
         console.error('Error fetching inventory:', error);
       });
   },
-
+*/
 
   methods: {
+    showDetails(item) {
+      // Set the hoveredItem to the ID of the current item
+      this.hoveredItem = item.ID;
+    },
+    hideDetails() {
+      // Clear the hoveredItem when leaving the button
+      this.hoveredItem = null;
+    },
     addToBasket(item) {
       this.$emit('addToBasket', item);
     },

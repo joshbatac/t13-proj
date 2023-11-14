@@ -1,5 +1,3 @@
-<!-- CustomerOrderView.vue -->
-
 <template>
   <div class="customer-order-view">
 
@@ -11,17 +9,9 @@
           <label for="phoneNumber">Already a member? Enter your phone number:</label>
           <br>
           <br>
-          <input 
-          class="input-num" 
-          type="text" 
-          id="phoneNumber" 
-          v-model="phoneNumber" 
-          @input="onInputChange"
-          @keyup.enter="checkMember"
-          pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
-          maxlength="10"
-          placeholder="1234567890" required
-          >
+          <input class="input-num" type="text" id="phoneNumber" v-model="phoneNumber" @input="onInputChange"
+            @keyup.enter="checkMember" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" maxlength="10" placeholder="1234567890"
+            required>
         </div>
       </h1>
     </div>
@@ -38,28 +28,19 @@
     <div class="content-container">
       <!-- Order buttons component on the left -->
       <div class="order-buttons">
-        <OrderButtons @addToBasket="addToBasket" />
+        <OrderButtons @addToBasket="addToBasket" :inventory ="this.inventory"/>
       </div>
 
       <!-- Basket component on the right -->
       <div class="basket">
-        <Basket 
-        :items="basketItems" 
-        :customerID = "this.customerID"
-        @removeItem="removeItemFromBasket" 
-        @fullRemove="fullRemove" />
+        <Basket :items="basketItems" :customerID="this.customerID" @removeItem="removeItemFromBasket"
+          @fullRemove="fullRemove" @increaseCurrStorage="increaseCurrStorage" />
       </div>
     </div>
 
 
-    <customerInfoMod
-      v-if="customerInfoModBool"
-      @boolChange = "customerInfoModBoolChange"
-      :customerName = "this.customerName"
-      :customerFName = "this.customerFName"
-      :customerLName = "this.customerLName"
-      :phoneNumber = "this.phoneNumber"
-    />
+    <customerInfoMod v-if="customerInfoModBool" @boolChange="customerInfoModBoolChange" :customerName="this.customerName"
+      :customerFName="this.customerFName" :customerLName="this.customerLName" :phoneNumber="this.phoneNumber" />
 
   </div>
 </template>
@@ -73,9 +54,11 @@ import axios from 'axios';
 export default {
   components: {
     OrderButtons,
+
     Basket,
     CustomerInfoMod,
   },
+
   data() {
     return {
       basketItems: [], // Now an array of pairs [item, quantity]
@@ -85,8 +68,22 @@ export default {
       customerID: 0,
       phoneNumber: null,
       customerInfoModBool: false,
+      inventory: [],
     };
   },
+
+
+  mounted() {
+    axios.get('http://localhost:3000/inventory')
+      .then(response => {
+        this.inventory = response.data.inventory; // Assuming the response contains an array of inventory items
+      })
+      .catch(error => {
+        console.error('Error fetching inventory:', error);
+      });
+  },
+
+
   methods: {
     onInputChange() {
       // Filter out non-numeric and non-hyphen characters
@@ -103,11 +100,17 @@ export default {
         // If the item doesn't exist, add it with a quantity of 1
         this.basketItems.unshift([item, 1]);
       }
+
+      item.currentStorage--;
     },
 
     removeItemFromBasket(index, item) {
       // Remove the specified item from the basket
       this.basketItems.splice(index, 1);
+    },
+
+    increaseCurrStorage(item) {
+      item.currentStorage++;
     },
 
     fullRemove() {
@@ -126,7 +129,7 @@ export default {
           this.customerLName = lName;
           this.customerName = `${fName} ${lName}`;
           console.log('Customer ID:', ID);
-          this,this.customerID = ID;
+          this, this.customerID = ID;
         } catch (error) {
           console.error('Error checking phone number:', error);
 
