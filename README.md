@@ -18,6 +18,9 @@ cd frontend > npm install > npm run serve
 Backend Setup
 cd backend > npm install 
 
+OR just copy and paste this in terminal after git cloning
+cd backend && npm install && cd .. && cd frontend && npm install
+
 
 ### local hosting
 Running Both Frontend and Backend Together
