@@ -96,10 +96,10 @@ export default {
 
     async checkout(pt) {
       try {
-        const orderResponse = await axios.post('http://localhost:3000/orders-insert', {// Insert the order into the Orders table
-          customerID: this.customerID, // default value for testing 
+        const orderResponse = await axios.post('http://localhost:3000/orders-insert', {// Isnsert the order into the Orders table
+          customerID: null, // default value for testing 
           orderDate: new Date().toISOString().split('T')[0], // Get current date in YYYY-MM-DD format
-          totalOwed: this.calculateOriginalRunningTotal(),
+          totalOwed: this.calculateRunningTotal(),
           totalPaid: 0, // default value for testing
           paymentType: pt, // default value for testing
         });
@@ -152,20 +152,6 @@ export default {
   },
 
 };
-
-/*
-
-CREATE TRIGGER apply_member_discount
-BEFORE INSERT ON orders
-FOR EACH ROW
-BEGIN
-    IF NEW.customerID IS NOT NULL THEN
-        SET NEW.totalOwed = NEW.totalOwed * 0.9; -- Apply a 10% discount
-    END IF;
-END;
-
-
-*/
 </script>
 
 <style scoped>
