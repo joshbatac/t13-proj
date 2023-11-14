@@ -11,13 +11,31 @@
       <h3>ORDER #: {{ orderData.orderID }}</h3>
 
       <ul>
-        <li v-for="(item, index) in items" :key="index">
-          ( x{{ item[1] }} ){{ item[0].name }} - ${{ (item[1] * item[0].price).toFixed(2) }}
+      <div v-if="!customerID">
+        <li v-for="(item, index) in items" :key="item[0].ID" @click="removeItem(index, item[0])">
+          ( x{{ item[1] }} ) {{ item[0].name }} - ${{ (item[1] * item[0].price).toFixed(2) }}
         </li>
-      </ul>
+      </div>
+      <div v-else>
+        <li v-for="(item, index) in items" :key="item[0].ID" @click="removeItem(index, item[0])">
+          ( x{{ item[1] }} ) {{ item[0].name }} -
+          <del style="color: red;">${{ (item[1] * item[0].price).toFixed(2) }}</del>
+          ${{ (item[1] * item[0].price * 0.9).toFixed(2) }}
+        </li>
+      </div>
+    </ul>
+
       <hr>
 
-      <h3> Amount Paid: ${{ this.total }} </h3>
+
+      <div v-if="!customerID">
+        <h3> Amount Paid: ${{ this.total }}</h3>
+      </div>
+
+      <div v-else>
+        <h3> Amount Paid: <s style="text-decoration: line-through; color: red;"> ${{ originaltotal }} </s> ${{ total }}</h3>
+      </div>
+
       <h3> Payment Type: {{ orderData.paymentType }} </h3>
 
       <button @click="printReceipt" class="print-button">Print Receipt?</button>
@@ -34,8 +52,10 @@
 export default {
   props: {
     total: String,
+    originaltotal: String,
     items: Array,
     orderData: Object,
+    customerID: Number,
   },
 
   methods: {

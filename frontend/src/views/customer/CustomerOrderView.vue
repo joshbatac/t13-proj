@@ -5,8 +5,7 @@
 
     <div v-if="!customerName">
       <h1>
-        Not a Member? Sign up Here!
-
+        Not a Member? Sign up HERE and get 10% off!
         <div class="h1-sub">
           <label for="phoneNumber">Already a member? Enter your phone number:</label>
           <br>
@@ -18,8 +17,8 @@
       <h1>
         Welcome Back... {{ customerName }}!
         <br>
-        <div class="signout" @click="signOut"> EDIT PROFILE</div>
-        <div class="signout" @click="signOut"> SIGN OUT</div>
+        <div class="belowCustomerTitle" @click="editCustomerProfile">EDIT PROFILE</div>
+        <div class="belowCustomerTitle" @click="signOut"> SIGN OUT</div>
 
       </h1>
     </div>
@@ -32,11 +31,8 @@
 
       <!-- Basket component on the right -->
       <div class="basket">
-        <Basket 
-        :items="basketItems" 
-        :customerID = "this.customerID"
-        @removeItem="removeItemFromBasket" 
-        @fullRemove="fullRemove" />
+        <Basket :items="basketItems" :customerID="this.customerID" @removeItem="removeItemFromBasket"
+          @fullRemove="fullRemove" />
       </div>
     </div>
 
@@ -95,12 +91,17 @@ export default {
           const { ID, fName, lName } = response.data;
           this.customerName = `${fName} ${lName}`;
           console.log('Customer ID:', ID);
-          this,this.customerID = ID;
+          this, this.customerID = ID;
         } catch (error) {
           console.error('Error checking phone number:', error);
 
         }
       }
+    },
+    editCustomerProfile() {
+
+      console.log("edit profile clicked")
+
     },
 
     signOut() {
@@ -170,7 +171,7 @@ h1 {
 }
 
 
-.signout {
+.belowCustomerTitle {
   display: inline-block;
   text-align: center;
   font-size: 14px;
@@ -183,7 +184,7 @@ h1 {
   margin-top: 0;
 }
 
-.signout:hover {
+.belowCustomerTitle:hover {
   color: white;
 }
 </style>

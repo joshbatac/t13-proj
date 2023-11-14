@@ -13,29 +13,40 @@
       <div v-else>
         <li v-for="(item, index) in items" :key="item[0].ID" @click="removeItem(index, item[0])">
           ( x{{ item[1] }} ) {{ item[0].name }} -
-  <del style="color: red;">${{ (item[1] * item[0].price).toFixed(2) }}</del>
-  ${{ (item[1] * item[0].price * 0.9).toFixed(2) }}        </li>
-
+          <del style="color: red;">${{ (item[1] * item[0].price).toFixed(2) }}</del>
+          ${{ (item[1] * item[0].price * 0.9).toFixed(2) }}
+        </li>
       </div>
-
     </ul>
 
     <!--CheckOut Button-->
     <button v-if="items.length > 0" @click="showConfirmation" class="checkout-button">
-      <div v-if="!customerID ">
+      <div v-if="!customerID">
         Check Out - Total: ${{ calculateRunningTotal() }}
       </div>
       <div v-else>
-        Check Out - Total: <s style="text-decoration: line-through; color: red;">${{ calculateRunningTotal() }}</s> ${{ (calculateRunningTotal() * 0.9).toFixed(2) }}
+        Check Out - Total: <s style="text-decoration: line-through; color: red;">${{ calculateOriginalRunningTotal()
+        }}</s> ${{ (calculateRunningTotal()) }}
       </div>
     </button>
 
     <!--Confirmation Pop-up -->
-    <ConfirmationPopUp v-if="showPopup" :total="calculateRunningTotal()" :items="this.items" @confirmed="checkout"
-      @canceled="hideConfirmation" />
+    <ConfirmationPopUp 
+    v-if="showPopup" 
+    :total="calculateRunningTotal()" 
+    :originaltotal = "calculateOriginalRunningTotal()" 
+    :items="this.items" 
+    :customerID="customerID"
+    @confirmed="checkout" @canceled="hideConfirmation" />
 
-    <Receipt v-if="confirmationCompleted" :total="calculateRunningTotal()" :items="this.items" :orderData="this.orderData"
-      @leave="finished()" />
+    <Receipt 
+    v-if="confirmationCompleted" 
+    :total="calculateRunningTotal()" 
+    :originaltotal = "calculateOriginalRunningTotal()" 
+    :items="this.items" 
+    :orderData="this.orderData"
+    :customerID="this.customerID"
+    @leave="finished()" />
 
   </div>
 </template>
@@ -120,9 +131,15 @@ export default {
       }
     },
 
-    calculateRunningTotal() { // Calculate the running total
+    calculateOriginalRunningTotal() { // Calculate the running total
       const rawTotal = this.items.reduce((total, [item, quantity]) => total + quantity * item.price, 0);
       return rawTotal.toFixed(2);
+    },
+    calculateRunningTotal() {
+      if (!this.customerID) {
+        return this.calculateOriginalRunningTotal();
+      }
+      return (this.calculateOriginalRunningTotal() * .9).toFixed(2);
     },
 
     finished() {

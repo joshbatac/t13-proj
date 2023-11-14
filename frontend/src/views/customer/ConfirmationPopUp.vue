@@ -8,14 +8,28 @@
       <h2> "Embrace the joy of shopping, confirm your choices, and let the adventure begin!" </h2>
       <hr>
       <ul>
-        <li v-for="(item, index) in items" :key="index">
-          ( x{{ item[1] }} ){{ item[0].name }} - ${{ (item[1] * item[0].price).toFixed(2) }}
+      <div v-if="!customerID">
+        <li v-for="(item, index) in items" :key="item[0].ID" @click="removeItem(index, item[0])">
+          ( x{{ item[1] }} ) {{ item[0].name }} - ${{ (item[1] * item[0].price).toFixed(2) }}
         </li>
-      </ul>
+      </div>
+      <div v-else>
+        <li v-for="(item, index) in items" :key="item[0].ID" @click="removeItem(index, item[0])">
+          ( x{{ item[1] }} ) {{ item[0].name }} -
+          <del style="color: red;">${{ (item[1] * item[0].price).toFixed(2) }}</del>
+          ${{ (item[1] * item[0].price * 0.9).toFixed(2) }}
+        </li>
+      </div>
+    </ul>
 
       <hr>
 
-      <p> TOTAL: ${{ this.total }}</p>
+      <div v-if="!customerID">
+        <p> TOTAL: ${{ this.total }}</p>
+      </div>
+      <div v-else>
+        <p> TOTAL: <s style="text-decoration: line-through; color: red;">${{ originaltotal }}</s> ${{ total }}</p>
+      </div>
 
       **SELECT PAYMENT TYPE TO CONTINUE**
       <br>
@@ -39,6 +53,8 @@
 export default {
   props: {
     total: String,
+    originaltotal: String,
+    customerID: Number,
     items: Array
   },
   data() {
