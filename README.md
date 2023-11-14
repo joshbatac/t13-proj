@@ -1,11 +1,22 @@
-# Team 13 Point of Sales Project
+# T13 Project
 
-2 terminals
+Welcome to the T13 Project repository! This project is divided into frontend and backend components.
 
-terminal 1: frontend
-cd frontend
-npm run serve
+## Getting Started
 
-terminal 2: backend
-cd backend
-npm run server.js
+Follow these steps to set up and run the project:
+
+### Clone the Repository
+
+```bash
+git clone https://github.com/joshbatac/t13-proj.git
+cd t13-proj
+
+Frontend Setup
+cd frontend > npm install > npm run serve
+
+Backend Setup
+cd backend > npm install node server.js
+
+Running Both Frontend and Backend Together
+If you want to run both the frontend and backend simultaneously, you can open two terminal windows, one for each
