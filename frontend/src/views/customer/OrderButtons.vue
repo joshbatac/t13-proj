@@ -4,7 +4,7 @@
   <div class="order-buttons">
     <h3>Our Products</h3>
     <!-- Buttons to add items to the basket -->
-    <button v-for="item in inventory" :key="item.ID" class="grid-button" @click="addToBasket(item)">
+    <button v-for="item in inventory" :key="item.ID" class="grid-button" @click="addToBasket(item)" >
       {{ item.name }} - Price: ${{ item.price }}
     </button>
   </div>

@@ -1,34 +1,32 @@
 <template>
-<div class ="popup">
-    <div class = "popup-overlay"></div>
+  <div class="popup">
+    <div class="popup-overlay"></div>
     <div class="popup-content">
+      <h1> EDIT PROFILE: </h1>
+      <p>
+        
+        Current Name: {{ customerName }}
+      
+      
+      </p>
 
-        <h1> EDIT PROFILE: </h1>
 
-
-        <p>Current Name: {{ customerName }}</p>
-
-
-        <button @click="this.$emit('boolChange')" class="cancel-button">Go Back</button>
+      <button @click="this.$emit('boolChange')" class="cancel-button">Go Back</button>
 
     </div>
-</div>
-
-
-
+  </div>
 </template>
 
 <script>
 export default {
-    props: {
-        customerName: String,
-    },
+  props: {
+    customerName: String,
+  },
 }
 
 </script>
 
 <style scoped>
-
 .popup {
   position: fixed;
   top: 0;

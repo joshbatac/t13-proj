@@ -1,5 +1,4 @@
 # T13 Project
-
 Welcome to the T13 Project repository! This project is divided into frontend and backend components.
 
 ## Getting Started

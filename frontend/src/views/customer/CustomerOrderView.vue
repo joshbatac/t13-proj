@@ -11,7 +11,16 @@
           <label for="phoneNumber">Already a member? Enter your phone number:</label>
           <br>
           <br>
-          <input class="input-num" type="text" id="phoneNumber" v-model="phoneNumber" @keyup.enter="checkMember">
+          <input 
+          class="input-num" 
+          type="text" id="phoneNumber" 
+          v-model="phoneNumber" 
+          @input="onInputChange"
+          @keyup.enter="checkMember"
+          pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
+          maxlength="10"
+          placeholder="1234567890" required
+          >
         </div>
       </h1>
     </div>
@@ -19,7 +28,7 @@
       <h1>
         Welcome Back... {{ customerName }}!
         <br>
-        <div class="belowWelcome" @click="customerInfoModBoolChange()">EDIT PROFILE</div> &nbsp &nbsp
+        <div class="belowWelcome" @click="customerInfoModBoolChange()">EDIT PROFILE</div> &nbsp; &nbsp;
         <div class="belowWelcome" @click="signOut"> SIGN OUT</div>
 
       </h1>
@@ -73,6 +82,10 @@ export default {
     };
   },
   methods: {
+    onInputChange() {
+      // Filter out non-numeric and non-hyphen characters
+      this.phoneNumber = this.phoneNumber.replace(/[^0-9-]/g, '');
+    },
     addToBasket(item) {
       // Check if the item is already in the basket
       const existingItem = this.basketItems.find((basketItem) => basketItem[0] === item);
