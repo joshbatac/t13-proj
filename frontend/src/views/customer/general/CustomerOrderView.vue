@@ -13,7 +13,8 @@
           <br>
           <input 
           class="input-num" 
-          type="text" id="phoneNumber" 
+          type="text" 
+          id="phoneNumber" 
           v-model="phoneNumber" 
           @input="onInputChange"
           @keyup.enter="checkMember"
@@ -55,6 +56,9 @@
       v-if="customerInfoModBool"
       @boolChange = "customerInfoModBoolChange"
       :customerName = "this.customerName"
+      :customerFName = "this.customerFName"
+      :customerLName = "this.customerLName"
+      :phoneNumber = "this.phoneNumber"
     />
 
   </div>
@@ -62,8 +66,8 @@
   
 <script>
 import OrderButtons from './OrderButtons.vue';
-import Basket from './Basket.vue';
-import CustomerInfoMod from './CustomerInfoMod.vue';
+import Basket from '../order-sending/Basket.vue';
+import CustomerInfoMod from '../customer-info/CustomerInfoMod.vue';
 import axios from 'axios';
 
 export default {
@@ -76,6 +80,8 @@ export default {
     return {
       basketItems: [], // Now an array of pairs [item, quantity]
       customerName: null,
+      customerFName: null,
+      customerLName: null,
       customerID: 0,
       phoneNumber: null,
       customerInfoModBool: false,
@@ -116,6 +122,8 @@ export default {
           });
 
           const { ID, fName, lName } = response.data;
+          this.customerFName = fName;
+          this.customerLName = lName;
           this.customerName = `${fName} ${lName}`;
           console.log('Customer ID:', ID);
           this,this.customerID = ID;
