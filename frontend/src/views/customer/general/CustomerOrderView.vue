@@ -72,6 +72,15 @@
     <MemberSignUp 
     v-if="memberSignUpBool"
     @boolChange = "memberSignUpBoolChange"
+    @finishedMSU = "dataMSUtransfer"
+    />
+
+    <MemberSignUpConfirm
+    v-if="showMSUC"
+    :newCustomerFName = "this.newCustomerFName"
+    :newCustomerLName = "this.newCustomerLName"
+    :newCustomerPhoneNum="this.newCustomerPhoneNum"
+    @showMSUConfirm = "toggleMSUC"
     />
 
 
@@ -84,6 +93,8 @@ import OrderButtons from './OrderButtons.vue';
 import Basket from '../order-sending/Basket.vue';
 import CustomerInfoMod from '../customer-info/CustomerInfoMod.vue';
 import MemberSignUp from '../customer-info/MemberSignUp.vue';
+import MemberSignUpConfirm from '../customer-info/MemberSignUpConfirm.vue';
+
 import axios from 'axios';
 
 export default {
@@ -91,20 +102,28 @@ export default {
     OrderButtons,
     Basket,
     CustomerInfoMod,
-    MemberSignUp
+    MemberSignUp,
+    MemberSignUpConfirm
   },
 
   data() {
     return {
       basketItems: [], // Now an array of pairs [item, quantity]
+      inventory: [],
+
+      customerInfoModBool: false,
+      memberSignUpBool: false,
+      showMSUC: false,
+
       customerName: null,
       customerFName: null,
       customerLName: null,
       customerID: 0,
       phoneNumber: null,
-      customerInfoModBool: false,
-      memberSignUpBool: false,
-      inventory: [],
+
+      newCustomerFName: null,
+      newCustomerLName: null,
+      newCustomerPhoneNum: null
     };
   },
 
@@ -126,7 +145,7 @@ export default {
     },
     onInputChange() {
       // Filter out non-numeric and non-hyphen characters
-      this.phoneNumber = this.phoneNumber.replace(/[^0-9-]/g, '');
+      this.phoneNumber = this.phoneNumber.replace(/[^0-9-]/g, '')
     },
     addToBasket(item) {
       // Check if the item is already in the basket
@@ -186,7 +205,17 @@ export default {
     },
     memberSignUpBoolChange() {
       this.memberSignUpBool = !(this.memberSignUpBool)
-      console.log(this.memberSignUpBool)
+    },
+    dataMSUtransfer(MSUFName, MSULname, MSUphoneNumber) {
+      this.newCustomerFName = MSUFName
+      this.newCustomerLName = MSULname
+      this.newCustomerPhoneNum = MSUphoneNumber
+      this.toggleMSUC()
+      
+    },
+    toggleMSUC() {
+      this.showMSUC = !(this.showMSUC)
+      this.memberSignUpBool = !(this.memberSignUpBool)
     }
   },
 };

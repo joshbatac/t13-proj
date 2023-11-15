@@ -3,78 +3,32 @@
         <div class="popup-overlay"></div>
         <div class="popup-content">
             <h1>Member Sign Up</h1>
+            <h2> Confirm Information </h2>
+            <hr>
+            First Name: {{ newCustomerFName }} <br>
+            Last Name:  {{  newCustomerLName }} <br>
+            Phone #: {{ newCustomerPhoneNum }} <br>
             <hr>
 
-            <div class="form-row">
-        <label for="customerFName" class="label">First Name:</label>
-        <input 
-          type="text"
-          id="customerFName"
-          placeholder="John"
-          class="input"
-          v-model = "customerFName"
-          @input="dataChanged"
-          >
-      </div>
+        <button class="confirm-button"> Confirm</button>
+            <button @click="this.$emit('showMSUConfirm')" class="cancel-button">Go Back</button>
 
-      <div class="form-row">
-        <label for="customerLName" class="label">Last Name: </label>
-        <input 
-          type="text"
-          id="customerLName"
-          placeholder="Doe"
-          class="input"
-          v-model = "customerLName"
-          @input="dataChanged"
-          >
-
-      </div>
-
-      <div class="form-row">
-        <label for="phoneNumber" class="label">Phone #:</label>
-        <input 
-          type="text"
-          id="phoneNumber"
-          placeholder="1234567890"
-          class="input"
-          v-model = "phoneNumber"
-          @input="dataChanged"
-          >
-
-      </div>
-      <button class="confirm-button" 
-      :disabled="!(this.customerFName && this.customerLName  && this.phoneNumber)"
-       @click="confirm">
-       Sign Up</button>
-
-        <button @click="this.$emit('boolChange')" class="cancel-button">Go Back</button>
+            
         </div> 
     </div>
 </template>
   
-  
 <script>
+
 export default {
     props: {
-
+        newCustomerFName: String,
+        newCustomerLName: String,
+        newCustomerPhoneNum: String,
     },
-    data() {
-        return {
-            customerFName: null,
-            customerLName: null,
-            phoneNumber: null,
-
-        }
-    },
-    methods: {
-        confirm() {
-            this.$emit('finishedMSU',this.customerFName,this.customerLName,this.phoneNumber);
-        }
-    }
 }
-
 </script>
-  
+
 <style scoped>
 .popup {
     position: fixed;
@@ -167,5 +121,4 @@ h1 {
 .cancel-button:disabled {
   background-color: #7e3535;
 }
-
 </style>
