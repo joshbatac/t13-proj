@@ -12,6 +12,15 @@
   </div>
 </template>
 
+<script>
+  export default {
+    data () {
+    return {
+    }
+  },
+  };
+</script>
+
 <style>
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
@@ -78,7 +87,9 @@ nav a.router-link-exact-active {
 }
 
 .employee-login:hover {
-  background-color: #0f362b;
+  background-color: #357e68;
 
 }
+
+
 </style>

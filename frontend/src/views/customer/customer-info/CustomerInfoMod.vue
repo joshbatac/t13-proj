@@ -140,4 +140,42 @@ h1 {
   margin: 0;
   border-radius: 8px;
 }
+
+
+.confirm-button {
+  width: 50%;
+  height: 30%;
+  line-height: 150%;
+  font-size: 18px;
+  background-color: #42b983;
+  color: #ffffff;
+  border: none;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: background-color 0.3s;
+  margin: 0.5%;
+}
+.confirm-button:hover,
+.confirm-button:disabled {
+  background-color: #357e68;
+}
+
+.cancel-button {
+  width: 50%;
+  height: 30%;
+  line-height: 150%;
+  font-size: 18px;
+  background-color: #b94242;
+  color: #ffffff;
+  border: none;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: background-color 0.3s;
+  margin: 0.5%;
+}
+
+.cancel-button:hover,
+.cancel-button:disabled {
+  background-color: #7e3535;
+}
 </style>

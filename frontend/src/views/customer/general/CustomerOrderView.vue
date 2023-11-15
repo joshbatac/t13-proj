@@ -3,14 +3,15 @@
 
     <div v-if="!customerName">
       <h1>
-        Not a Member? Sign up Here and get 10% off!
+        Not a Member? 
+        <div class = "member-login" @click="memberSignUpBoolChange()">
+          Sign Up Here</div> 
+       and get 10% off!
 
         <div class="h1-sub">
           <label for="phoneNumber">Already a member? Enter your phone number:</label>
 
           <br>
-          <br>
-
           <input 
             class="input-num" 
             type="text" 
@@ -49,9 +50,11 @@
         <Basket 
           :items="basketItems" 
           :customerID="this.customerID" 
+          :customerFName="this.customerFName"
           @removeItem="removeItemFromBasket"
           @fullRemove="fullRemove" 
           @increaseCurrStorage="increaseCurrStorage" 
+          @updateInventory="updateInventory"
         />
       </div>
     </div>
@@ -66,6 +69,13 @@
       @boolChange="customerInfoModBoolChange" 
     />
 
+    <MemberSignUp 
+    v-if="memberSignUpBool"
+    @boolChange = "memberSignUpBoolChange"
+    />
+
+
+
   </div>
 </template>
   
@@ -73,14 +83,15 @@
 import OrderButtons from './OrderButtons.vue';
 import Basket from '../order-sending/Basket.vue';
 import CustomerInfoMod from '../customer-info/CustomerInfoMod.vue';
+import MemberSignUp from '../customer-info/MemberSignUp.vue';
 import axios from 'axios';
 
 export default {
   components: {
     OrderButtons,
-
     Basket,
     CustomerInfoMod,
+    MemberSignUp
   },
 
   data() {
@@ -92,23 +103,27 @@ export default {
       customerID: 0,
       phoneNumber: null,
       customerInfoModBool: false,
+      memberSignUpBool: false,
       inventory: [],
     };
   },
 
 
   mounted() {
-    axios.get('http://localhost:3000/inventory')
+    this.updateInventory()
+  },
+
+
+  methods: {
+    updateInventory() {
+      axios.get('http://localhost:3000/inventory')
       .then(response => {
         this.inventory = response.data.inventory; // Assuming the response contains an array of inventory items
       })
       .catch(error => {
         console.error('Error fetching inventory:', error);
       });
-  },
-
-
-  methods: {
+    },
     onInputChange() {
       // Filter out non-numeric and non-hyphen characters
       this.phoneNumber = this.phoneNumber.replace(/[^0-9-]/g, '');
@@ -165,10 +180,13 @@ export default {
       this.phoneNumber = null;
       this.customerName = null;
       this.customerID = 0;
-
     },
     customerInfoModBoolChange() {
       this.customerInfoModBool = !(this.customerInfoModBool)
+    },
+    memberSignUpBoolChange() {
+      this.memberSignUpBool = !(this.memberSignUpBool)
+      console.log(this.memberSignUpBool)
     }
   },
 };
@@ -230,6 +248,21 @@ h1 {
   margin-right: 3%;
 }
 
+.member-login {
+  color: white;
+  transition: color 0.15s;
+  background-color: #42b983;
+  display: inline;
+  font-size: 32px;
+  text-decoration: underline;
+
+
+}
+
+.member-login:hover {
+  color:  grey;
+
+}
 
 .belowWelcome {
   display: inline-block;
@@ -247,5 +280,7 @@ h1 {
 .belowWelcome:hover {
   color: white;
 }
+
+
 </style>
   

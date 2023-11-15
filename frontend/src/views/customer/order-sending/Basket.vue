@@ -1,6 +1,12 @@
 <template>
   <div class="basket-container">
-    <h3>Basket</h3>
+
+    <div v-if="!customerID">   
+      <h3>Basket</h3>
+    </div>
+    <div v-else>
+      <h3>{{ customerFName }}'s Basket <div style="color: red; display:inline;">(-10%)</div></h3>
+    </div>
 
     <!-- Display items and quantities in the basket -->
     <ul>
@@ -55,6 +61,7 @@ export default {
   props: {
     items: Array, // item, quantity
     customerID: Number,
+    customerFName: String,
   },
 
   data() {
@@ -88,7 +95,7 @@ export default {
     async checkout(pt) {
       try {
         const orderResponse = await axios.post('http://localhost:3000/orders-insert', {// Isnsert the order into the Orders table
-          customerID: this.customerID, // default value for testing 
+          customerID: this.customerID,
           orderDate: new Date().toISOString().split('T')[0], // Get current date in YYYY-MM-DD format
           totalOwed: this.calculateRunningTotal(),
           totalPaid: 0, // default value for testing
@@ -116,7 +123,7 @@ export default {
 
         this.hideConfirmation(); //Hide the confirmation pop-up after checkout
         this.confirmationCompleted = true
-
+        
       } catch (error) {
         console.error('Error processing checkout:', error);
       }
@@ -138,6 +145,7 @@ export default {
         this.confirmationCompleted = false,
         this.orderData = null
       this.$emit('fullRemove');
+      this.$emit('updateInventory');
     }
 
   },
