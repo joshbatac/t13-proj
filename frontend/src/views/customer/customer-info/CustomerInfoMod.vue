@@ -46,7 +46,7 @@
           >
 
       </div>
-<button class="confirm-button" :disabled="!(this.newFName || this.newLName ||this.newPhone)">Confirm</button>
+<button class="confirm-button" :disabled="!(this.newFName || this.newLName ||this.newPhone)" @click="confirm">Confirm</button>
       <button @click="this.$emit('boolChange')" class="cancel-button">Go Back</button>
 
 
@@ -68,10 +68,10 @@ export default {
       newFName: null,
       newLName: null,
       newPhone: null,
+      showConfirm: false,
     }
   },
   methods: { 
-
   }
 }
 

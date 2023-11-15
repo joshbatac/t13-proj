@@ -3,15 +3,25 @@
 
     <div v-if="!customerName">
       <h1>
-        Not a Member? Sign up Here!
+        Not a Member? Sign up Here and get 10% off!
 
         <div class="h1-sub">
           <label for="phoneNumber">Already a member? Enter your phone number:</label>
+
           <br>
           <br>
-          <input class="input-num" type="text" id="phoneNumber" v-model="phoneNumber" @input="onInputChange"
-            @keyup.enter="checkMember" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" maxlength="10" placeholder="1234567890"
-            required>
+
+          <input 
+            class="input-num" 
+            type="text" 
+            id="phoneNumber" 
+            v-model="phoneNumber" 
+            pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" 
+            maxlength="10" placeholder="1234567890"
+            @input="onInputChange"
+            @keyup.enter="checkMember" 
+            required
+          >
         </div>
       </h1>
     </div>
@@ -28,19 +38,33 @@
     <div class="content-container">
       <!-- Order buttons component on the left -->
       <div class="order-buttons">
-        <OrderButtons @addToBasket="addToBasket" :inventory ="this.inventory"/>
+        <OrderButtons 
+          @addToBasket="addToBasket" 
+          :inventory ="this.inventory"
+        />
       </div>
 
       <!-- Basket component on the right -->
       <div class="basket">
-        <Basket :items="basketItems" :customerID="this.customerID" @removeItem="removeItemFromBasket"
-          @fullRemove="fullRemove" @increaseCurrStorage="increaseCurrStorage" />
+        <Basket 
+          :items="basketItems" 
+          :customerID="this.customerID" 
+          @removeItem="removeItemFromBasket"
+          @fullRemove="fullRemove" 
+          @increaseCurrStorage="increaseCurrStorage" 
+        />
       </div>
     </div>
 
 
-    <customerInfoMod v-if="customerInfoModBool" @boolChange="customerInfoModBoolChange" :customerName="this.customerName"
-      :customerFName="this.customerFName" :customerLName="this.customerLName" :phoneNumber="this.phoneNumber" />
+    <customerInfoMod 
+      v-if="customerInfoModBool" 
+      :customerName="this.customerName"
+      :customerFName="this.customerFName" 
+      :customerLName="this.customerLName" 
+      :phoneNumber="this.phoneNumber" 
+      @boolChange="customerInfoModBoolChange" 
+    />
 
   </div>
 </template>

@@ -57,6 +57,8 @@ app.get("/inventory", (req, res) => {
       currentStorage: item.currentStorage,
       maxStorage: item.maxStorage,
       price: item.price,
+      lowStorage: item.lowStorage,
+      zeroStorage: item.zeroStorage,
     }));
 
     res.json({ inventory });

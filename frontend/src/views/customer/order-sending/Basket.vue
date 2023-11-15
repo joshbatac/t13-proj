@@ -30,22 +30,12 @@
     </button>
 
     <!--Confirmation Pop-up -->
-    <ConfirmationPopUp 
-    v-if="showPopup" 
-    :total="calculateRunningTotal()" 
-    :originaltotal = "calculateOriginalRunningTotal()" 
-    :items="this.items" 
-    :customerID="customerID"
-    @confirmed="checkout" @canceled="hideConfirmation" />
+    <ConfirmationPopUp v-if="showPopup" :total="calculateRunningTotal()" :originaltotal="calculateOriginalRunningTotal()"
+      :items="this.items" :customerID="customerID" @confirmed="checkout" @canceled="hideConfirmation" />
 
-    <Receipt 
-    v-if="confirmationCompleted" 
-    :total="calculateRunningTotal()" 
-    :originaltotal = "calculateOriginalRunningTotal()" 
-    :items="this.items" 
-    :orderData="this.orderData"
-    :customerID="this.customerID"
-    @leave="finished()" />
+    <Receipt v-if="confirmationCompleted" :total="calculateRunningTotal()"
+      :originaltotal="calculateOriginalRunningTotal()" :items="this.items" :orderData="this.orderData"
+      :customerID="this.customerID" @leave="finished()" />
 
   </div>
 </template>
@@ -80,10 +70,10 @@ export default {
     removeItem(index, item) {
       if (this.items[index][1] > 1) { // Decrement the quantity if it's greater than 1
         this.items[index][1]--;
-        this.$emit('increaseCurrStorage',item);
+        this.$emit('increaseCurrStorage', item);
       } else { // If the quantity is 1, remove the entire item
         this.$emit('removeItem', index, item);
-        this.$emit('increaseCurrStorage',item);
+        this.$emit('increaseCurrStorage', item);
       }
     },
 
@@ -98,7 +88,7 @@ export default {
     async checkout(pt) {
       try {
         const orderResponse = await axios.post('http://localhost:3000/orders-insert', {// Isnsert the order into the Orders table
-          customerID: null, // default value for testing 
+          customerID: this.customerID, // default value for testing 
           orderDate: new Date().toISOString().split('T')[0], // Get current date in YYYY-MM-DD format
           totalOwed: this.calculateRunningTotal(),
           totalPaid: 0, // default value for testing
