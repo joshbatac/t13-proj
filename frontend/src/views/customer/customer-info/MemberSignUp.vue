@@ -13,7 +13,6 @@
           placeholder="John"
           class="input"
           v-model = "customerFName"
-          @input="dataChanged"
           >
       </div>
 
@@ -25,7 +24,6 @@
           placeholder="Doe"
           class="input"
           v-model = "customerLName"
-          @input="dataChanged"
           >
 
       </div>
@@ -33,12 +31,15 @@
       <div class="form-row">
         <label for="phoneNumber" class="label">Phone #:</label>
         <input 
-          type="text"
-          id="phoneNumber"
-          placeholder="1234567890"
-          class="input"
-          v-model = "phoneNumber"
-          @input="dataChanged"
+            type="text"
+            id="phoneNumber"
+            placeholder="1234567890"
+            class="input"
+            v-model = "phoneNumber"
+            @input="numbersOnly"
+            pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" 
+            maxlength="10" 
+        required
           >
 
       </div>
@@ -67,6 +68,10 @@ export default {
         }
     },
     methods: {
+        numbersOnly() {
+      // Filter out non-numeric and non-hyphen characters
+      this.phoneNumber = this.phoneNumber.replace(/[^0-9-]/g, '')
+    },
         confirm() {
             this.$emit('finishedMSU',this.customerFName,this.customerLName,this.phoneNumber);
         }

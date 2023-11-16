@@ -65,6 +65,25 @@ app.get("/inventory", (req, res) => {
   });
 });
 
+app.post("/inventory-update", (req, res) => {
+  const { inventoryID, quantity } = req.body;
+  const sqlUpdate = "UPDATE inventory SET currentStorage = currentStorage + ? WHERE ID = ?";
+
+  db.query(sqlUpdate, [quantity, inventoryID], (updateError, updateResults) => {
+    if (updateError) {
+      console.error("Error updating inventory:", updateError);
+      res.status(500).json({ error: "Error updating inventory" });
+    } else {
+      res.status(200).json({
+        message: "Inventory updated successfully",
+        inventoryID,
+        newQuantity: quantity, // Assuming you want to return the new quantity
+      });
+    }
+  });
+});
+
+
 app.get("/orders", (req, res) => {
   db.query("SELECT * FROM orders", (error, results) => {
     if (error) {

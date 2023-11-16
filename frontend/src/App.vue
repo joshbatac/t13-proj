@@ -6,19 +6,62 @@
         <router-link to="/about">About</router-link> |
         <router-link to="/customer-order">Shop Here!</router-link>
       </div>
-      <div class="employee-login">Employee Login</div>
+      <div class="employee-buttons-container" v-if="roleID === 3">
+        <div class="employee-buttons">Manager Portal</div>
+        <div class="employee-buttons">Restocker Portal</div>
+        <div class="employee-buttons">Cashier Portal</div>
+        <div class= "employee-buttons"> Info & Sign Out </div>
+
+      </div>
+      <div class="employee-buttons-container" v-else-if="roleID === 2">
+        <div class="employee-buttons">Restocker Portal</div>
+        <div class="employee-buttons">Cashier Portal</div>
+        <div class= "employee-buttons"> Info & Sign Out </div>
+
+      </div>
+
+      <div class="employee-buttons-container" v-else-if="roleID === 1">
+        <div class="employee-buttons">Cashier Portal</div>
+        <div class= "employee-buttons"> Info & Sign Out </div>
+
+      </div>
+      <div v-if="!employeeInfo" class ="employee-buttons-container">
+        <div class="employee-buttons" @click="toggleELP()">
+        Employee Login   
+        </div>
+      </div>
+
+      <EmployeeLoginPopUp
+        v-if="showELP"
+        @cancel="toggleELP"
+      />
+
+
     </nav>
     <router-view />
   </div>
 </template>
 
 <script>
-  export default {
-    data () {
+
+import EmployeeLoginPopUp from './views/employee/login/EmployeeLoginPopUp.vue';
+export default {
+  components: {
+    EmployeeLoginPopUp
+  },
+  data() {
     return {
+      showELP: false,
+      roleID: 3,
+      employeeInfo: true
     }
   },
-  };
+  methods: {
+    toggleELP() {
+      this.showELP = !(this.showELP)
+    }
+  }
+};
 </script>
 
 <style>
@@ -74,7 +117,13 @@ nav a.router-link-exact-active {
   color: #42b983;
 }
 
-.employee-login {
+.employee-buttons-container {
+  display: flex;
+  /* Use flex container to make the child divs inline */
+}
+
+
+.employee-buttons {
   margin-left: auto;
   /* Push the "Employee Login" div to the right */
   color: white;
@@ -83,13 +132,14 @@ nav a.router-link-exact-active {
   padding: 8px;
   font-size: 14px;
   transition: background-color 0.15s;
-
 }
 
-.employee-login:hover {
+.employee-buttons:not(:first-child) {
+  margin-left: 10px;
+}
+
+
+.employee-buttons:hover {
   background-color: #357e68;
-
 }
-
-
 </style>

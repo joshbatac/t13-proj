@@ -145,7 +145,7 @@ export default {
     },
     onInputChange() {
       // Filter out non-numeric and non-hyphen characters
-      this.phoneNumber = this.phoneNumber.replace(/[^0-9-]/g, '')
+      this.phoneNumber = this.phoneNumber.replace(/[^0-9]/g, '');
     },
     addToBasket(item) {
       // Check if the item is already in the basket

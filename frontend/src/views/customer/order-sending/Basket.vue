@@ -1,11 +1,12 @@
 <template>
   <div class="basket-container">
 
-    <div v-if="!customerID">   
+    <div v-if="!customerID">
       <h3>Basket</h3>
     </div>
     <div v-else>
-      <h3>{{ customerFName }}'s Basket <div style="color: red; display:inline;">(-10%)</div></h3>
+      <h3>{{ customerFName }}'s Basket <div style="color: red; display:inline;">(-10%)</div>
+      </h3>
     </div>
 
     <!-- Display items and quantities in the basket -->
@@ -97,7 +98,7 @@ export default {
         const orderResponse = await axios.post('http://localhost:3000/orders-insert', {// Isnsert the order into the Orders table
           customerID: this.customerID,
           orderDate: new Date().toISOString().split('T')[0], // Get current date in YYYY-MM-DD format
-          totalOwed: this.calculateRunningTotal(),
+          totalOwed: this.calculateOriginalRunningTotal(),
           totalPaid: 0, // default value for testing
           paymentType: pt, // default value for testing
         });
@@ -121,9 +122,24 @@ export default {
           }
         });
 
+        // Updated inventory to remove the correct quantity from the current storage
+        this.items.forEach(async ([item, quantity]) => {
+          try {
+            const inventoryUpdateResponse = await axios.post('http://localhost:3000/inventory-update', {
+              inventoryID: item.ID,
+              quantity: -quantity, // Subtract the sold quantity from the inventory
+            });
+            console.log('Inventory updated successfully:', inventoryUpdateResponse.data);
+          } catch (inventoryError) {
+            console.error('Error updating inventory:', inventoryError);
+          }
+        });
+
+
+
         this.hideConfirmation(); //Hide the confirmation pop-up after checkout
         this.confirmationCompleted = true
-        
+
       } catch (error) {
         console.error('Error processing checkout:', error);
       }
