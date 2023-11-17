@@ -35,7 +35,7 @@
 
       <EmployeeLoginPopUp v-if="showELP" @cancel="toggleELP" @success="successEL" />
 
-      <EmployeeInfoView v-if="showEInfo" @cancel="toggleEInfo" :employeeInfo="this.employeeInfo" />
+      <EmployeeInfoView v-if="showEInfo" @cancel="toggleEInfo" @signOut="signOut" :employeeInfo="this.employeeInfo" />
 
     </nav>
 
@@ -75,7 +75,8 @@ export default {
     signOut() {
       this.roleID = 0;
       this.employeeInfo.length = 0;
-      this.toggleEInfo;
+      this.toggleEInfo()
+
     }
   }
 };

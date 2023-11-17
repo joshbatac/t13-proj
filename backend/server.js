@@ -91,28 +91,18 @@ app.get("/orders", (req, res) => {
       res.status(500).send("Error in database query");
       return;
     }
-
-    const orders = results.map((item) => ({
-      ID: item.ID,
-      CustomerID: item.CustomerID,
-      orderDate: item.orderDate,
-      totalOwed: item.totalOwed,
-      totalPaid: item.totalPaid,
-      paymentType: item.paymentType,
-    }));
-
-    res.json({ orders });
+    res.json({ orders: results });
   });
 });
 
 app.post("/orders-insert", (req, res) => {
-  const { customerID, orderDate, totalOwed, totalPaid, paymentType } = req.body;
+  const { customerID, orderDate, totalOwed, paymentType } = req.body;
   const sql =
-    "INSERT INTO orders (customerID, orderDate, totalOwed, totalPaid, paymentType) VALUES (?, ?, ?, ?, ?)";
+    "INSERT INTO orders (customerID, orderDate, totalOwed, paymentType) VALUES (?, ?, ?, ?)";
 
   db.query(
     sql,
-    [customerID, orderDate, totalOwed, totalPaid, paymentType],
+    [customerID, orderDate, totalOwed, paymentType],
     (error, results) => {
       if (error) {
         console.error("Error inserting into orders:", error);
@@ -124,7 +114,6 @@ app.post("/orders-insert", (req, res) => {
           customerID,
           orderDate,
           totalOwed,
-          totalPaid,
           paymentType,
         };
         res.status(200).json({
@@ -144,16 +133,10 @@ app.get("/orderitems", (req, res) => {
       return;
     }
 
-    const orderItems = results.map((item) => ({
-      ID: item.ID,
-      orderID: item.orderID,
-      inventoryID: item.inventoryID,
-      quantity: item.quantity,
-    }));
-
-    res.json({ orderItems });
+    res.json({ orderItems: results });
   });
 });
+
 
 app.post("/orderitems-insert", (req, res) => {
   const { orderID, inventoryID, quantity } = req.body;
@@ -187,7 +170,6 @@ app.get("/orders", (req, res) => {
       res.status(500).send("Error in database query");
       return;
     }
-
     const orders = results.map((item) => ({
       ID: item.ID,
       CustomerID: item.CustomerID,

@@ -11,12 +11,12 @@
 
       <ul>
       <div v-if="!customerID">
-        <li v-for="(item, index) in items" :key="item[0].ID" @click="removeItem(index, item[0])">
+        <li v-for="(item) in items" :key="item[0].ID" >
           ( x{{ item[1] }} ) {{ item[0].name }} - ${{ (item[1] * item[0].price).toFixed(2) }}
         </li>
       </div>
       <div v-else>
-        <li v-for="(item, index) in items" :key="item[0].ID" @click="removeItem(index, item[0])">
+        <li v-for="(item) in items" :key="item[0].ID">
           ( x{{ item[1] }} ) {{ item[0].name }} -
           <del style="color: red;">${{ (item[1] * item[0].price).toFixed(2) }}</del>
           ${{ (item[1] * item[0].price * 0.9).toFixed(2) }}

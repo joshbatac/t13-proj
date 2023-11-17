@@ -99,7 +99,6 @@ export default {
           customerID: this.customerID,
           orderDate: new Date().toISOString().split('T')[0], // Get current date in YYYY-MM-DD format
           totalOwed: this.calculateOriginalRunningTotal(),
-          totalPaid: 0, // default value for testing
           paymentType: pt, // default value for testing
         });
 
