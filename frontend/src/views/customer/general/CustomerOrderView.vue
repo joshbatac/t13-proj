@@ -181,7 +181,6 @@ export default {
           const response = await axios.post('http://localhost:3000/check-phone-num', {
             phoneNumber: this.phoneNumber,
           });
-
           const { ID, fName, lName } = response.data;
           this.customerFName = fName;
           this.customerLName = lName;

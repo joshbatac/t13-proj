@@ -8,8 +8,8 @@
             </h1>
 
             <div class="form-row">
-                <label for="phoneNumber" class="label">Phone Number:</label>
-                <input type="text" id="phoneNumber" placeholder="1234567890" class="input" v-model="phoneNumber"
+                <label for="employeeID" class="label">Employee ID:</label>
+                <input type="text" id="employeeID" placeholder="1234567890" class="input" v-model="employeeID"
                     @input="numbersOnly" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" maxlength="10" required>
             </div>
 
@@ -19,32 +19,52 @@
             </div>
 
 
-            <button class="confirm-button">Sign In</button>
-            <button @click="cancel" class="cancel-button">Cancel</button>
+            <button @click="signIn()" class="confirm-button">Sign In</button>
+            <button @click="cancel()" class="cancel-button">Cancel</button>
         </div>
     </div>
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
     data() {
         return {
-            phoneNumber: null,
-
-        }
+            employeeID: null,
+            password: null,
+        };
     },
     methods: {
         numbersOnly() {
             // Remove non-numeric characters, except hyphens
-            this.phoneNumber = this.phoneNumber.replace(/[^0-9]/g, '');
+            this.employeeID = this.employeeID.replace(/[^0-9]/g, '');
         },
         cancel() {
-            this.$emit('cancel')
-        }
-    }
+            this.$emit('cancel');
+        },
+        async signIn() {
+            try {
+                // Make an HTTP POST request to your backend endpoint
+                const response = await axios.post('http://localhost:3000/employee-login', {
+                    ID: this.employeeID,
+                    checkPassword: this.password,
+                });
 
-}
+                if (response.data.success) {
+                    console.log('Login successful');   
+                    this.$emit('success', response.data);
+                } else {
+                    console.log('Login failed');
+                }
+            } catch (error) {
+                console.error('An error occurred during login:', error);
+            }
+        },
+    },
+};
 </script>
+
 
 <style scoped>
 h1 {

@@ -2,63 +2,80 @@
   <div>
     <nav>
       <div class="nav-center">
-        <router-link to="/">Home</router-link> |
-        <router-link to="/about">About</router-link> |
-        <router-link to="/customer-order">Shop Here!</router-link>
+        <router-link to="/" class="a">Home</router-link> |
+        <router-link to="/about" class="a">About</router-link> |
+        <router-link to="/customer-order" class="a">Shop Here!</router-link>
       </div>
+
+      <!-- Manager, Restocker, Cashier Portals for roleID 3 -->
       <div class="employee-buttons-container" v-if="roleID === 3">
-        <div class="employee-buttons">Manager Portal</div>
-        <div class="employee-buttons">Restocker Portal</div>
-        <div class="employee-buttons">Cashier Portal</div>
-        <div class= "employee-buttons"> Info & Sign Out </div>
-
+        <router-link to="/manager-portal" class="employee-buttons">Manager Portal</router-link>
+        <router-link to="/restock-portal" class="employee-buttons">Restocker Portal</router-link>
+        <router-link to="/cashier-portal" class="employee-buttons">Cashier Portal</router-link>
+        <div @click="toggleEInfo()" class="employee-buttons">{{employeeInfo.FirstName}}'s Info & Sign Out</div>
       </div>
+
+      <!-- Restocker, Cashier Portals for roleID 2 -->
       <div class="employee-buttons-container" v-else-if="roleID === 2">
-        <div class="employee-buttons">Restocker Portal</div>
-        <div class="employee-buttons">Cashier Portal</div>
-        <div class= "employee-buttons"> Info & Sign Out </div>
-
+        <router-link to="/restock-portal" class="employee-buttons">Restocker Portal</router-link>
+        <router-link to="/cashier-portal" class="employee-buttons">Cashier Portal</router-link>
+        <div class="employee-buttons">Info & Sign Out</div>
       </div>
 
+      <!-- Cashier Portal for roleID 1 -->
       <div class="employee-buttons-container" v-else-if="roleID === 1">
-        <div class="employee-buttons">Cashier Portal</div>
-        <div class= "employee-buttons"> Info & Sign Out </div>
-
-      </div>
-      <div v-if="!employeeInfo" class ="employee-buttons-container">
-        <div class="employee-buttons" @click="toggleELP()">
-        Employee Login   
-        </div>
+        <router-link to="/cashier-portal" class="employee-buttons">Cashier Portal</router-link>
+        <div class="employee-buttons">Info & Sign Out</div>
       </div>
 
-      <EmployeeLoginPopUp
-        v-if="showELP"
-        @cancel="toggleELP"
-      />
+      <!-- Employee Login for roleID 0 -->
+      <div v-if="roleID === 0" class="employee-buttons" @click="toggleELP()">
+        Employee Login
+      </div>
 
+      <EmployeeLoginPopUp v-if="showELP" @cancel="toggleELP" @success="successEL" />
+
+      <EmployeeInfoView v-if="showEInfo" @cancel="toggleEInfo" :employeeInfo="this.employeeInfo" />
 
     </nav>
+
     <router-view />
   </div>
 </template>
 
 <script>
-
 import EmployeeLoginPopUp from './views/employee/login/EmployeeLoginPopUp.vue';
+import EmployeeInfoView from './views/employee/info/EmployeeInfo.vue';
+
 export default {
   components: {
-    EmployeeLoginPopUp
+    EmployeeLoginPopUp,
+    EmployeeInfoView
   },
   data() {
     return {
       showELP: false,
-      roleID: 3,
-      employeeInfo: true
+      showEInfo: false,
+      roleID: 0,
+      employeeInfo: [],
     }
   },
   methods: {
     toggleELP() {
-      this.showELP = !(this.showELP)
+      this.showELP = !this.showELP;
+    },
+    successEL(info) {
+      this.employeeInfo = info;
+      this.roleID = this.employeeInfo.RoleID;
+      this.toggleELP();
+    },
+    toggleEInfo() {
+      this.showEInfo = !this.showEInfo;
+    },
+    signOut() {
+      this.roleID = 0;
+      this.employeeInfo.length = 0;
+      this.toggleEInfo;
     }
   }
 };
@@ -75,17 +92,13 @@ export default {
 
 h1 {
   background-color: #42b983;
-  /* Background color for h1 */
   color: #ffffff;
-  /* Text color for h1 */
   padding: 30px;
-  /* Add padding to provide space around the text */
   margin: 0;
 }
 
 nav {
   background-color: #2c3e50;
-  /* Background color for nav */
   padding: 15px;
   margin: 0;
   display: flex;
@@ -99,33 +112,29 @@ nav {
   flex-grow: 1;
 }
 
-nav a {
+.a, .router-link-exact-active, .employee-buttons {
   font-weight: bold;
   color: #ffffff;
-  /* Text color for nav links */
   margin-right: 10px;
-  /* Adjust the margin as needed for spacing between links */
   transition: color .15s;
+  text-decoration: none; /* Remove underline from all router links and buttons */
 }
 
-nav a:hover {
+.a:hover, .employee-buttons:hover {
   color: gray;
-
 }
 
-nav a.router-link-exact-active {
+.router-link-exact-active {
   color: #42b983;
 }
 
 .employee-buttons-container {
   display: flex;
-  /* Use flex container to make the child divs inline */
 }
 
-
 .employee-buttons {
+  font-style: normal;
   margin-left: auto;
-  /* Push the "Employee Login" div to the right */
   color: white;
   border-radius: 8px;
   background-color: #42b983;
@@ -137,7 +146,6 @@ nav a.router-link-exact-active {
 .employee-buttons:not(:first-child) {
   margin-left: 10px;
 }
-
 
 .employee-buttons:hover {
   background-color: #357e68;

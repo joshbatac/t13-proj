@@ -178,6 +178,57 @@ app.post("/orderitems-insert", (req, res) => {
   });
 });
 
+
+
+app.get("/orders", (req, res) => {
+  db.query("SELECT * FROM orders", (error, results) => {
+    if (error) {
+      console.error("Error in query:", error);
+      res.status(500).send("Error in database query");
+      return;
+    }
+
+    const orders = results.map((item) => ({
+      ID: item.ID,
+      CustomerID: item.CustomerID,
+      orderDate: item.orderDate,
+      totalOwed: item.totalOwed,
+      totalPaid: item.totalPaid,
+      paymentType: item.paymentType,
+    }));
+
+    res.json({ orders });
+  });
+});
+
+
+
+app.post('/employee-login', (req, res) => {
+  const { ID, checkPassword } = req.body;
+
+  const sql = 'SELECT * FROM Employees WHERE ID = ?';
+
+  db.query(sql, ID, (error, results) => {
+    if (error) {
+      console.error('Error checking login credentials:', error);
+      res.status(500).json({ error: 'Error checking login credentials' });
+    } else {
+      if (results.length > 0) {
+        const employee = results[0];
+        // Compare the entered password with the one stored in the database
+        if (checkPassword === employee.Password) {
+          res.status(200).json({ success: true, message: 'Login successful', ...employee });
+        } else {
+          res.status(401).json({ success: false, message: `Incorrect Password ${checkPassword} expected ${employee.Password}` });
+        }
+      } else {
+        res.status(404).json({ message: `Employee with ID ${ID} not found` });
+      }
+    }
+  });
+});
+
+
 app.post("/check-phone-num", (req, res) => {
   const { phoneNumber } = req.body;
   const sql = "SELECT ID, fName, lName FROM customers WHERE phone_num = ?";
