@@ -10,8 +10,8 @@
             Phone #: {{ newCustomerPhoneNum }} <br>
             <hr>
 
-        <button class="confirm-button"> Confirm</button>
-            <button @click="this.$emit('showMSUConfirm')" class="cancel-button">Go Back</button>
+        <button class="confirm-button" @click = "this.$emit('signUp')"> Confirm</button>
+            <button @click="this.$emit('cancel')" class="cancel-button">Go Back</button>
 
             
         </div> 

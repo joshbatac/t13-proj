@@ -80,7 +80,8 @@
     :newCustomerFName = "this.newCustomerFName"
     :newCustomerLName = "this.newCustomerLName"
     :newCustomerPhoneNum="this.newCustomerPhoneNum"
-    @showMSUConfirm = "toggleMSUC"
+    @cancel = "toggleMSUC"
+    @signUp = "addCustomer"
     />
 
 
@@ -215,6 +216,29 @@ export default {
     toggleMSUC() {
       this.showMSUC = !(this.showMSUC)
       this.memberSignUpBool = !(this.memberSignUpBool)
+    },
+    async addCustomer() {
+      try {
+        // Make a POST request to the API endpoint using Axios
+        const response = await axios.post('http://localhost:3000/customer-insert', {
+          fName: this.newCustomerFName,
+          lName: this.newCustomerLName,
+          phone_num: this.newCustomerPhoneNum
+        });
+
+        // Check if the request was successful
+        if (response.status === 200) {
+          const { message, customer } = response.data;
+          console.log(message);
+          console.log('Inserted customer:', customer);
+        } else {
+          console.error('Error adding customer:', response.data.error);
+        }
+      } catch (error) {
+        console.error('Error adding customer:', error.message);
+      }
+
+      this.showMSUC = false;
     }
   },
 };

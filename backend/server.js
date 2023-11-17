@@ -235,6 +235,35 @@ app.post("/check-phone-num", (req, res) => {
   });
 });
 
+app.post("/customer-insert", (req, res) => {
+  const { fName, lName, phone_num } = req.body;
+  const sql =
+    "INSERT INTO customers (fName, lName, phone_num) VALUES (?, ?, ?)";
+
+  db.query(
+    sql,
+    [fName, lName, phone_num],
+    (error, results) => {
+      if (error) {
+        console.error("Error inserting into customers:", error);
+        res.status(500).json({ error: "Error inserting into customers" });
+      } else {
+        // Return the inserted row data (including the auto-generated ID)
+        const insertedCustomer = {
+          ID: results.insertId,
+          fName,
+          lName,
+          phone_num,
+        };
+        res.status(200).json({
+          message: "Customer added successfully",
+          customer: insertedCustomer,
+        });
+      }
+    }
+  );
+});
+
 app.listen(3000, () => {
   console.log("Server is running on http://localhost:3000/");
 });
