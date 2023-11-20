@@ -69,12 +69,19 @@
       },
     },
     methods: {
-      removeStock() {
-        console.log(`Removing stock for item ${this.selectedItem} with quantity ${this.removeQuantity}`);
-        // Add logic here to remove the stock based on selected item and removal quantity
-        // You can make an API call to update the server-side data
+      async removeStock() {
+        try {
+            const inventoryUpdateResponse = await axios.post('http://localhost:3000/inventory-update', {
+              inventoryID: this.selectedItem,
+              quantity: -(this.removeQuantity), // Subtract the sold quantity from the inventory
+            });
+            console.log('Inventory updated successfully:', inventoryUpdateResponse.data);
+          } catch (inventoryError) {
+            console.error('Error updating inventory:', inventoryError);
+          }
         this.selectedItem = null;
         this.removeQuantity = 0;
+        this.fetchInventory();
       },
       async fetchInventory() {
       try {

@@ -1,22 +1,32 @@
 <template>
   <div>
     <h1> CASHIER PORTAL </h1>
-    <button class ="grid-button" @click="showOrders=!(showOrders)">Order Table Button</button>
+    <button class ="grid-button" @click="showOrders=!(showOrders)">Past Member Orders</button>
     <OrderTableButton
       v-if="showOrders"
       @cancel="showOrders=!(showOrders)"/>
+
+      <button class ="grid-button" @click="showInventory=!(showInventory)">View Inventory</button>
+    <InventoryTableButton
+      v-if="showInventory"
+      @cancel="showInventory=!(showInventory)"/>
   </div>
+
+  
 </template>
 
 <script>
 import OrderTableButton from '../components/OrderTableButton.vue';
+import InventoryTableButton from '../components/inventory/InventoryTableButton.vue';
 export default {
   components: {
-    OrderTableButton
+    OrderTableButton,
+    InventoryTableButton
   },
     data() {
         return {
             showOrders: false,
+            showInventory: false
         }
     }
 }

@@ -16,13 +16,14 @@
     <RemoveStocksButton
       v-if="showRemoveStock"
       @cancel="showRemoveStock=!(showRemoveStock)"/>
+      
   </div>
   </template>
   
   <script>
-  import InventoryTableButton from '../components/InventoryTableButton.vue';
-import OrderStocksButton from '../components/OrderStocksButton.vue';
-import RemoveStocksButton from '../components/RemoveStocksButton.vue';
+  import InventoryTableButton from '../components/inventory/InventoryTableButton.vue';
+import OrderStocksButton from '../components/inventory/OrderStocksButton.vue';
+import RemoveStocksButton from '../components/inventory/RemoveStocksButton.vue';
 
 
 export default {

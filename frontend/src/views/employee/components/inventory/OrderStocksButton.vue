@@ -97,13 +97,19 @@
             console.error('Error fetching inventory:', error);
           });
       },
-      updateStock() {
-        // Add logic here to update the stock based on selected item and order quantity
-        // You can make an API call to update the server-side data
-        console.log(`Updating stock for item ${this.selectedItem} with quantity ${this.orderQuantity}`);
-        // Reset the selected item and order quantity after updating
+      async updateStock() {
+        try {
+            const inventoryUpdateResponse = await axios.post('http://localhost:3000/inventory-update', {
+              inventoryID: this.selectedItem,
+              quantity: this.orderQuantity, // Subtract the sold quantity from the inventory
+            });
+            console.log('Inventory updated successfully:', inventoryUpdateResponse.data);
+          } catch (inventoryError) {
+            console.error('Error updating inventory:', inventoryError);
+          }
         this.selectedItem = null;
         this.orderQuantity = 0;
+        this.fetchInventory();
       },
     },
   };
