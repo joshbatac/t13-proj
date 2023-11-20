@@ -264,6 +264,31 @@ app.post("/customer-insert", (req, res) => {
   );
 });
 
+app.get('/emp-orders', (req, res) => {
+  const { startDate, endDate } = req.query;
+
+  // Validate startDate and endDate presence
+  if (!startDate || !endDate) {
+    res.status(400).json({ error: 'Invalid parameters. Please provide startDate and endDate.' });
+    return;
+  }
+
+  // Define the SQL query based on the selected date range
+  const query = 'SELECT * FROM orders WHERE orderDate BETWEEN ? AND ?';
+
+  // Execute the SQL query
+  db.query(query, [startDate, endDate], (error, results) => {
+    if (error) {
+      console.error('Error executing SQL query:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    } else {
+      // Send the response back to the client
+      res.json(results);
+    }
+  });
+});
+
+
 app.listen(3000, () => {
   console.log("Server is running on http://localhost:3000/");
 });

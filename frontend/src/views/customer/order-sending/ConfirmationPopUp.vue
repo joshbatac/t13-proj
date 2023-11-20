@@ -187,5 +187,6 @@ label {
 
 .custom-select:hover {
   border-color: #42b983;
-}</style>
+}
+</style>
   

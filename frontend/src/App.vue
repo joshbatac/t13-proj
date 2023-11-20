@@ -10,14 +10,14 @@
       <!-- Manager, Restocker, Cashier Portals for roleID 3 -->
       <div class="employee-buttons-container" v-if="roleID === 3">
         <router-link to="/manager-portal" class="employee-buttons">Manager Portal</router-link>
-        <router-link to="/restock-portal" class="employee-buttons">Restocker Portal</router-link>
+        <router-link to="/restocker-portal" class="employee-buttons">Restocker Portal</router-link>
         <router-link to="/cashier-portal" class="employee-buttons">Cashier Portal</router-link>
         <div @click="toggleEInfo()" class="employee-buttons">{{employeeInfo.FirstName}}'s Info & Sign Out</div>
       </div>
 
       <!-- Restocker, Cashier Portals for roleID 2 -->
       <div class="employee-buttons-container" v-else-if="roleID === 2">
-        <router-link to="/restock-portal" class="employee-buttons">Restocker Portal</router-link>
+        <router-link to="/restocker-portal" class="employee-buttons">Restocker Portal</router-link>
         <router-link to="/cashier-portal" class="employee-buttons">Cashier Portal</router-link>
         <div class="employee-buttons">Info & Sign Out</div>
       </div>
