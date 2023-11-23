@@ -87,39 +87,47 @@
           });
       },
       async addItem() {
-      try {
-        const response = await axios.post('http://localhost:3000/inventory-add', this.newItem);
-        if (response.data.success) {
-          // Item added successfully
-          this.fetchInventory(); // Refresh inventory data after adding
-          this.resetNewItem(); // Clear the input fields
-        } else {
-          console.log('Error adding item:', response.data.message);
+        try {
+          const response = await axios.post('http://localhost:3000/inventory-add', this.newItem);
+          if (response.data.success) {
+            // Item added successfully
+            this.fetchInventory(); // Refresh inventory data after adding
+            this.resetNewItem(); // Clear the input fields
+          } else {
+            console.log('Error adding item:', response.data.message);
+          }
+        } catch (error) {
+          console.error('Error adding item:', error);
         }
-      } catch (error) {
-        console.error('Error adding item:', error);
-      }
-      this.fetchInventory(); // Refresh inventory data after adding
+        this.fetchInventory(); // Refresh inventory data after adding
 
-    },
+      },
 
-    async removeItem(itemId) {
-      try {
-        const response = await axios.delete(`http://localhost:3000/inventory-delete/${itemId}`);
-        if (response.data.success) {
-          // Item removed successfully
-          this.fetchInventory(); // Refresh inventory data after removing
-        } else {
-          console.error('Error removing item:', response.data.message);
+      async removeItem(itemId) {
+        try {
+          const response = await axios.delete(`http://localhost:3000/inventory-delete/${itemId}`);
+          if (response.data.success) {
+            // Item removed successfully
+            this.fetchInventory(); // Refresh inventory data after removing
+          } else {
+            console.error('Error removing item:', response.data.message);
+          }
+        } catch (error) {
+          console.error('Error removing item:', error);
         }
-      } catch (error) {
-        console.error('Error removing item:', error);
-      }
 
-      this.fetchInventory(); // Refresh inventory data after removing
+        this.fetchInventory(); // Refresh inventory data after removing
 
-      
-    },
+
+      },
+      resetNewItem() {
+        this.newItem = {
+          name: '',
+          price: 0,
+          currentStorage: 0,
+          maxStorage: 0,
+        };
+      },
 
     },
   };

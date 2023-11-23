@@ -18,20 +18,10 @@
       @cancel="showRemoveStock=!(showRemoveStock)"/>
       <hr>  
 
-      <button class ="grid-button" @click="showInventory=!(showInventory)">View Inventory</button>
-    <InventoryEditButton
-      v-if="showInventory"
-      @cancel="showInventory=!(showInventory)"/>
-
-      <button class ="grid-button" @click="showOrderStock=!(showOrderStock)">Order Stocks</button>
-    <OrderStocksButton
-      v-if="showOrderStock"
-      @cancel="showOrderStock=!(showOrderStock)"/>
-
-      <button class ="grid-button" @click="showRemoveStock=!(showRemoveStock)">Remove Stocks</button>
-    <RemoveStocksButton
-      v-if="showRemoveStock"
-      @cancel="showRemoveStock=!(showRemoveStock)"/>
+      <button class ="grid-button" @click="showEmployees=!(showEmployees)">Add & Remove Employees</button>
+    <EmployeesEditButton
+      v-if="showEmployees"
+      @cancel="showEmployees=!(showEmployees)"/>
 
       <hr>
 
@@ -43,18 +33,25 @@
 import OrderStocksButton from '../components/inventory/OrderStocksButton.vue';
 import RemoveStocksButton from '../components/inventory/RemoveStocksButton.vue';
 
+import EmployeesEditButton from '../components/employees/EmployeesEditButton.vue';
+
+
 
 export default {
   components: {
     InventoryEditButton,
     OrderStocksButton,
-    RemoveStocksButton
+    RemoveStocksButton,
+    EmployeesEditButton
   },
     data() {
         return {
           showInventory: false,
           showOrderStock: false,
           showRemoveStock: false,
+
+          showEmployees: false,
+
           showOrders: false
         }
     }

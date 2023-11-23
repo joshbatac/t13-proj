@@ -137,6 +137,19 @@ app.get("/employees", (req, res) => {
   });
 });
 
+app.get("/roles", (req, res) => {
+  db.query("SELECT * FROM roles", (error, results) => {
+    if (error) {
+      console.error("Error in query:", error);
+      res.status(500).send("Error in database query");
+      return;
+    }
+    res.json({
+      roles: results
+    });
+  });
+});
+
 app.get('/customer-orders', (req, res) => {
   const { startDate, endDate, customerId } = req.query; // Extract customer ID from the request query
 
@@ -540,6 +553,57 @@ app.delete("/inventory-delete/:itemId", (req, res) => {
     }
   });
 });
+
+app.post("/employees-add", (req, res) => {
+  const { FirstName, LastName, RoleID, Email, Phone, password } = req.body;
+  const sqlInsert = "INSERT INTO employees (FirstName, LastName,RoleID, Email, Phone, Password) VALUES (?, ?, ?, ?, ?, ?)";
+
+  db.query(sqlInsert, [FirstName, LastName, RoleID, Email, Phone, password], (insertError, insertResults) => {
+    if (insertError) {
+      console.error("Error adding employee:", insertError);
+      res.status(500).json({
+        error: "Error adding employee"
+      });
+    } else {
+      // Return the inserted row data (including the auto-generated ID)
+      const insertedEmployee = {
+        ID: insertResults.insertId,
+        FirstName,
+        LastName,
+        RoleID,
+        Email,
+        Phone,
+        password
+      };
+      res.status(200).json({
+        success: true,
+        message: "Employee added successfully",
+        employee: insertedEmployee,
+      });
+    }
+  });
+});
+
+app.delete("/employees-delete/:employeeId", (req, res) => {
+  const employeeId = req.params.employeeId;
+  const sqlDelete = "DELETE FROM employees WHERE ID = ?";
+
+  db.query(sqlDelete, [employeeId], (deleteError, deleteResults) => {
+    if (deleteError) {
+      console.error("Error removing employee:", deleteError);
+      res.status(500).json({
+        error: "Error removing employee"
+      });
+    } else {
+      res.status(200).json({
+        success: true,
+        message: "Employee removed successfully",
+        employeeId,
+      });
+    }
+  });
+});
+
 
 
 app.listen(3000, () => {
