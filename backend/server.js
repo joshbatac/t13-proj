@@ -170,6 +170,35 @@ app.get('/emp-orders', (req, res) => {
   });
 });
 
+app.post("/customer-update", (req, res) => {
+  const {
+    customerID,
+    newFName,
+    newLName,
+    newPhone
+  } = req.body;
+
+  // Assuming your table is named 'customers'
+  const sqlUpdate = "UPDATE customers SET fName = ?, lName = ?, phone_num = ? WHERE ID = ?";
+
+  db.query(sqlUpdate, [newFName, newLName, newPhone, customerID], (updateError, updateResults) => {
+    if (updateError) {
+      console.error("Error updating customer:", updateError);
+      res.status(500).json({
+        error: "Error updating customer"
+      });
+    } else {
+      res.status(200).json({
+        message: "Customer updated successfully",
+        customerID,
+        newFName,
+        newLName,
+        newPhone,
+      });
+    }
+  });
+});
+
 
 app.post("/inventory-update", (req, res) => {
   const {

@@ -19,13 +19,13 @@
       <div class="employee-buttons-container" v-else-if="roleID === 2">
         <router-link to="/restocker-portal" class="employee-buttons">Restocker Portal</router-link>
         <router-link to="/cashier-portal" class="employee-buttons">Cashier Portal</router-link>
-        <div class="employee-buttons">Info & Sign Out</div>
+        <div @click="toggleEInfo()" class="employee-buttons">{{employeeInfo.FirstName}}'s Info & Sign Out</div>
       </div>
 
       <!-- Cashier Portal for roleID 1 -->
       <div class="employee-buttons-container" v-else-if="roleID === 1">
         <router-link to="/cashier-portal" class="employee-buttons">Cashier Portal</router-link>
-        <div class="employee-buttons">Info & Sign Out</div>
+        <div @click="toggleEInfo()" class="employee-buttons">{{employeeInfo.FirstName}}'s Info & Sign Out</div>
       </div>
 
       <!-- Employee Login for roleID 0 -->
@@ -37,6 +37,7 @@
 
       <EmployeeInfoView v-if="showEInfo" @cancel="toggleEInfo" @signOut="signOut" :employeeInfo="this.employeeInfo" />
 
+      <EmployeeUpdate v-if="showEUpdate" @cancel="toggleEUpdate" :employeeInfo="this.employeeInfo" />
     </nav>
 
     <router-view />
@@ -44,111 +45,122 @@
 </template>
 
 <script>
-import EmployeeLoginPopUp from './views/employee/login/EmployeeLoginPopUp.vue';
-import EmployeeInfoView from './views/employee/info/EmployeeInfo.vue';
+  import EmployeeLoginPopUp from './views/employee/login/EmployeeLoginPopUp.vue';
+  import EmployeeInfoView from './views/employee/info/EmployeeInfo.vue';
+  import EmployeeUpdate from './views/employee/info/EmployeeUpdate.vue';
 
-export default {
-  components: {
-    EmployeeLoginPopUp,
-    EmployeeInfoView
-  },
-  data() {
-    return {
-      showELP: false,
-      showEInfo: false,
-      roleID: 0,
-      employeeInfo: [],
-    }
-  },
-  methods: {
-    toggleELP() {
-      this.showELP = !this.showELP;
-    },
-    successEL(info) {
-      this.employeeInfo = info;
-      this.roleID = this.employeeInfo.RoleID;
-      this.toggleELP();
-    },
-    toggleEInfo() {
-      this.showEInfo = !this.showEInfo;
-    },
-    signOut() {
-      this.roleID = 0;
-      this.employeeInfo.length = 0;
-      this.toggleEInfo()
 
+  export default {
+    components: {
+      EmployeeLoginPopUp,
+      EmployeeInfoView,
+      EmployeeUpdate
+    },
+    data() {
+      return {
+        showELP: false,
+        showEInfo: false,
+        showEUpdate: false,
+        roleID: 0,
+        employeeInfo: [],
+      }
+    },
+    methods: {
+      toggleELP() {
+        this.showELP = !this.showELP;
+      },
+      successEL(info) {
+        this.employeeInfo = info;
+        this.roleID = this.employeeInfo.RoleID;
+        this.toggleELP();
+      },
+      toggleEInfo() {
+        this.showEInfo = !this.showEInfo;
+      },
+      toggleEUpdate() {
+        this.showEUpdate = !this.showEUpdate;
+      },
+      signOut() {
+        this.roleID = 0;
+        this.employeeInfo.length = 0;
+        this.toggleEInfo()
+
+      }
     }
-  }
-};
+  };
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
+  #app {
+    font-family: Avenir, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-align: center;
+    color: #2c3e50;
+  }
 
-h1 {
-  background-color: #42b983;
-  color: #ffffff;
-  padding: 30px;
-  margin: 0;
-}
+  h1 {
+    background-color: #42b983;
+    color: #ffffff;
+    padding: 30px;
+    margin: 0;
+  }
 
-nav {
-  background-color: #2c3e50;
-  padding: 15px;
-  margin: 0;
-  display: flex;
-  align-items: center;
-}
+  nav {
+    background-color: #2c3e50;
+    padding: 15px;
+    margin: 0;
+    display: flex;
+    align-items: center;
+  }
 
-.nav-center {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  flex-grow: 1;
-}
+  .nav-center {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex-grow: 1;
+  }
 
-.a, .router-link-exact-active, .employee-buttons {
-  font-weight: bold;
-  color: #ffffff;
-  margin-right: 10px;
-  transition: color .15s;
-  text-decoration: none; /* Remove underline from all router links and buttons */
-}
+  .a,
+  .router-link-exact-active,
+  .employee-buttons {
+    font-weight: bold;
+    color: #ffffff;
+    margin-right: 10px;
+    transition: color .15s;
+    text-decoration: none;
+    /* Remove underline from all router links and buttons */
+  }
 
-.a:hover, .employee-buttons:hover {
-  color: gray;
-}
+  .a:hover,
+  .employee-buttons:hover {
+    color: gray;
+  }
 
-.router-link-exact-active {
-  color: #42b983;
-}
+  .router-link-exact-active {
+    color: #42b983;
+  }
 
-.employee-buttons-container {
-  display: flex;
-}
+  .employee-buttons-container {
+    display: flex;
+  }
 
-.employee-buttons {
-  font-style: normal;
-  margin-left: auto;
-  color: white;
-  border-radius: 8px;
-  background-color: #42b983;
-  padding: 8px;
-  font-size: 14px;
-  transition: background-color 0.15s;
-}
+  .employee-buttons {
+    font-style: normal;
+    margin-left: auto;
+    color: white;
+    border-radius: 8px;
+    background-color: #42b983;
+    padding: 8px;
+    font-size: 14px;
+    transition: background-color 0.15s;
+  }
 
-.employee-buttons:not(:first-child) {
-  margin-left: 10px;
-}
+  .employee-buttons:not(:first-child) {
+    margin-left: 10px;
+  }
 
-.employee-buttons:hover {
-  background-color: #357e68;
-}
+  .employee-buttons:hover {
+    background-color: #357e68;
+  }
 </style>

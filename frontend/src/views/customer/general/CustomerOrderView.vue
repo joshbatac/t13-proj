@@ -65,6 +65,7 @@
       :customerName="this.customerName"
       :customerFName="this.customerFName" 
       :customerLName="this.customerLName" 
+      :customerID ="this.customerID"
       :phoneNumber="this.phoneNumber" 
       @boolChange="customerInfoModBoolChange" 
     />
@@ -187,7 +188,7 @@ export default {
           this.customerLName = lName;
           this.customerName = `${fName} ${lName}`;
           console.log('Customer ID:', ID);
-          this, this.customerID = ID;
+          this.customerID = ID;
         } catch (error) {
           console.error('Error checking phone number:', error);
 
