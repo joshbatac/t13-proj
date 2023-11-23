@@ -30,6 +30,7 @@ app.use((req, res, next) => {
   next();
 });
 
+
 app.get("/", (req, res) => {
   db.query("SHOW TABLES", (error, results) => {
     if (error) {
@@ -38,9 +39,12 @@ app.get("/", (req, res) => {
       return;
     }
     const tableNames = results.map((row) => Object.values(row)[0]);
-    res.json({ tables: tableNames });
+    res.json({
+      tables: tableNames
+    });
   });
 });
+
 
 app.get("/inventory", (req, res) => {
   db.query("SELECT * FROM inventory", (error, results) => {
@@ -61,25 +65,9 @@ app.get("/inventory", (req, res) => {
       zeroStorage: item.zeroStorage,
     }));
 
-    res.json({ inventory });
-  });
-});
-
-app.post("/inventory-update", (req, res) => {
-  const { inventoryID, quantity } = req.body;
-  const sqlUpdate = "UPDATE inventory SET currentStorage = currentStorage + ? WHERE ID = ?";
-
-  db.query(sqlUpdate, [quantity, inventoryID], (updateError, updateResults) => {
-    if (updateError) {
-      console.error("Error updating inventory:", updateError);
-      res.status(500).json({ error: "Error updating inventory" });
-    } else {
-      res.status(200).json({
-        message: "Inventory updated successfully",
-        inventoryID,
-        newQuantity: quantity, // Assuming you want to return the new quantity
-      });
-    }
+    res.json({
+      inventory
+    });
   });
 });
 
@@ -91,39 +79,12 @@ app.get("/orders", (req, res) => {
       res.status(500).send("Error in database query");
       return;
     }
-    res.json({ orders: results });
+    res.json({
+      orders: results
+    });
   });
 });
 
-app.post("/orders-insert", (req, res) => {
-  const { customerID, orderDate, totalOwed, paymentType } = req.body;
-  const sql =
-    "INSERT INTO orders (customerID, orderDate, totalOwed, paymentType) VALUES (?, ?, ?, ?)";
-
-  db.query(
-    sql,
-    [customerID, orderDate, totalOwed, paymentType],
-    (error, results) => {
-      if (error) {
-        console.error("Error inserting into orders:", error);
-        res.status(500).json({ error: "Error inserting into orders" });
-      } else {
-        // Return the inserted row data (including the auto-generated orderID)
-        const insertedOrder = {
-          orderID: results.insertId,
-          customerID,
-          orderDate,
-          totalOwed,
-          paymentType,
-        };
-        res.status(200).json({
-          message: "Order inserted successfully",
-          order: insertedOrder,
-        });
-      }
-    }
-  );
-});
 
 app.get("/orderitems", (req, res) => {
   db.query("SELECT * FROM orderitems", (error, results) => {
@@ -133,34 +94,11 @@ app.get("/orderitems", (req, res) => {
       return;
     }
 
-    res.json({ orderItems: results });
+    res.json({
+      orderItems: results
+    });
   });
 });
-
-
-app.post("/orderitems-insert", (req, res) => {
-  const { orderID, inventoryID, quantity } = req.body;
-  const sql =
-    "INSERT INTO orderitems (orderID, inventoryID, quantity) VALUES (?, ?, ?)";
-
-  db.query(sql, [orderID, inventoryID, quantity], (error, results) => {
-    if (error) {
-      console.error("Error inserting into orderitems:", error);
-      res.status(500).json({ error: "Error inserting into orderitems" });
-    } else {
-      // Return the inserted row data
-      const insertedItem = {
-        orderID,
-        inventoryID,
-        quantity,
-      };
-      res
-        .status(200)
-        .json({ message: "Item inserted successfully", item: insertedItem });
-    }
-  });
-});
-
 
 
 app.get("/orders", (req, res) => {
@@ -179,32 +117,189 @@ app.get("/orders", (req, res) => {
       paymentType: item.paymentType,
     }));
 
-    res.json({ orders });
+    res.json({
+      orders
+    });
   });
 });
 
 
+app.get("/employees", (req, res) => {
+  db.query("SELECT * FROM employees", (error, results) => {
+    if (error) {
+      console.error("Error in query:", error);
+      res.status(500).send("Error in database query");
+      return;
+    }
+
+    res.json({
+      employees: results
+    });
+  });
+});
+
+
+app.get('/emp-orders', (req, res) => {
+  const {
+    startDate,
+    endDate
+  } = req.query;
+
+  // Validate startDate and endDate presence
+  if (!startDate || !endDate) {
+    res.status(400).json({
+      error: 'Invalid parameters. Please provide startDate and endDate.'
+    });
+    return;
+  }
+
+  // Define the SQL query based on the selected date range
+  const query = 'SELECT * FROM orders WHERE orderDate BETWEEN ? AND ?';
+
+  // Execute the SQL query
+  db.query(query, [startDate, endDate], (error, results) => {
+    if (error) {
+      console.error('Error executing SQL query:', error);
+      res.status(500).json({
+        error: 'Internal Server Error'
+      });
+    } else {
+      // Send the response back to the client
+      res.json(results);
+    }
+  });
+});
+
+
+app.post("/inventory-update", (req, res) => {
+  const {
+    inventoryID,
+    quantity
+  } = req.body;
+  const sqlUpdate = "UPDATE inventory SET currentStorage = currentStorage + ? WHERE ID = ?";
+
+  db.query(sqlUpdate, [quantity, inventoryID], (updateError, updateResults) => {
+    if (updateError) {
+      console.error("Error updating inventory:", updateError);
+      res.status(500).json({
+        error: "Error updating inventory"
+      });
+    } else {
+      res.status(200).json({
+        message: "Inventory updated successfully",
+        inventoryID,
+        newQuantity: quantity, // Assuming you want to return the new quantity
+      });
+    }
+  });
+});
+
+
+app.post("/orders-insert", (req, res) => {
+  const {
+    customerID,
+    orderDate,
+    totalOwed,
+    paymentType
+  } = req.body;
+  const sql =
+    "INSERT INTO orders (customerID, orderDate, totalOwed, paymentType) VALUES (?, ?, ?, ?)";
+
+  db.query(
+    sql,
+    [customerID, orderDate, totalOwed, paymentType],
+    (error, results) => {
+      if (error) {
+        console.error("Error inserting into orders:", error);
+        res.status(500).json({
+          error: "Error inserting into orders"
+        });
+      } else {
+        // Return the inserted row data (including the auto-generated orderID)
+        const insertedOrder = {
+          orderID: results.insertId,
+          customerID,
+          orderDate,
+          totalOwed,
+          paymentType,
+        };
+        res.status(200).json({
+          message: "Order inserted successfully",
+          order: insertedOrder,
+        });
+      }
+    }
+  );
+});
+
+
+app.post("/orderitems-insert", (req, res) => {
+  const {
+    orderID,
+    inventoryID,
+    quantity
+  } = req.body;
+  const sql =
+    "INSERT INTO orderitems (orderID, inventoryID, quantity) VALUES (?, ?, ?)";
+
+  db.query(sql, [orderID, inventoryID, quantity], (error, results) => {
+    if (error) {
+      console.error("Error inserting into orderitems:", error);
+      res.status(500).json({
+        error: "Error inserting into orderitems"
+      });
+    } else {
+      // Return the inserted row data
+      const insertedItem = {
+        orderID,
+        inventoryID,
+        quantity,
+      };
+      res
+        .status(200)
+        .json({
+          message: "Item inserted successfully",
+          item: insertedItem
+        });
+    }
+  });
+});
+
 
 app.post('/employee-login', (req, res) => {
-  const { ID, checkPassword } = req.body;
+  const {
+    ID,
+    checkPassword
+  } = req.body;
 
   const sql = 'SELECT * FROM Employees WHERE ID = ?';
 
   db.query(sql, ID, (error, results) => {
     if (error) {
       console.error('Error checking login credentials:', error);
-      res.status(500).json({ error: 'Error checking login credentials' });
+      res.status(500).json({
+        error: 'Error checking login credentials'
+      });
     } else {
       if (results.length > 0) {
         const employee = results[0];
         // Compare the entered password with the one stored in the database
         if (checkPassword === employee.Password) {
-          res.status(200).json({ success: true, message: 'Login successful', ...employee });
+          res.status(200).json({
+            success: true,
+            message: 'Login successful',
+            ...employee
+          });
         } else {
-          res.status(401).json({ success: false, message: `Incorrect Password ${checkPassword} expected ${employee.Password}` });
+          res.status(401).json({
+            success: false,
+            message: `Incorrect Password ${checkPassword} expected ${employee.Password}`
+          });
         }
       } else {
-        res.status(404).json({ message: `Employee with ID ${ID} not found` });
+        res.status(404).json({
+          message: `Employee with ID ${ID} not found`
+        });
       }
     }
   });
@@ -212,31 +307,50 @@ app.post('/employee-login', (req, res) => {
 
 
 app.post("/check-phone-num", (req, res) => {
-  const { phoneNumber } = req.body;
+  const {
+    phoneNumber
+  } = req.body;
   const sql = "SELECT ID, fName, lName FROM customers WHERE phone_num = ?";
 
   db.query(sql, [phoneNumber], (error, results) => {
     if (error) {
       console.error("Error checking phone number:", error);
-      res.status(500).json({ error: "Error checking phone number" });
+      res.status(500).json({
+        error: "Error checking phone number"
+      });
     } else {
       // Check if any results were returned (indicating the phone number exists)
       const phoneNumberExists = results.length > 0;
 
       if (phoneNumberExists) {
-        const { ID, fName, lName } = results[0];
+        const {
+          ID,
+          fName,
+          lName
+        } = results[0];
         res
           .status(200)
-          .json({ message: "Phone number exists", ID, fName, lName });
+          .json({
+            message: "Phone number exists",
+            ID,
+            fName,
+            lName
+          });
       } else {
-        res.status(404).json({ message: "Phone number not found" });
+        res.status(404).json({
+          message: "Phone number not found"
+        });
       }
     }
   });
 });
 
 app.post("/customer-insert", (req, res) => {
-  const { fName, lName, phone_num } = req.body;
+  const {
+    fName,
+    lName,
+    phone_num
+  } = req.body;
   const sql =
     "INSERT INTO customers (fName, lName, phone_num) VALUES (?, ?, ?)";
 
@@ -246,7 +360,9 @@ app.post("/customer-insert", (req, res) => {
     (error, results) => {
       if (error) {
         console.error("Error inserting into customers:", error);
-        res.status(500).json({ error: "Error inserting into customers" });
+        res.status(500).json({
+          error: "Error inserting into customers"
+        });
       } else {
         // Return the inserted row data (including the auto-generated ID)
         const insertedCustomer = {
@@ -262,30 +378,6 @@ app.post("/customer-insert", (req, res) => {
       }
     }
   );
-});
-
-app.get('/emp-orders', (req, res) => {
-  const { startDate, endDate } = req.query;
-
-  // Validate startDate and endDate presence
-  if (!startDate || !endDate) {
-    res.status(400).json({ error: 'Invalid parameters. Please provide startDate and endDate.' });
-    return;
-  }
-
-  // Define the SQL query based on the selected date range
-  const query = 'SELECT * FROM orders WHERE orderDate BETWEEN ? AND ?';
-
-  // Execute the SQL query
-  db.query(query, [startDate, endDate], (error, results) => {
-    if (error) {
-      console.error('Error executing SQL query:', error);
-      res.status(500).json({ error: 'Internal Server Error' });
-    } else {
-      // Send the response back to the client
-      res.json(results);
-    }
-  });
 });
 
 
