@@ -48,6 +48,7 @@
   import EmployeeLoginPopUp from './views/employee/login/EmployeeLoginPopUp.vue';
   import EmployeeInfoView from './views/employee/info/EmployeeInfo.vue';
   import EmployeeUpdate from './views/employee/info/EmployeeUpdate.vue';
+  import router from '@/router';
 
 
   export default {
@@ -85,6 +86,7 @@
         this.roleID = 0;
         this.employeeInfo.length = 0;
         this.toggleEInfo()
+        router.push({ name: 'home' });
 
       }
     }

@@ -3,7 +3,7 @@
     <h1>Manager Portal</h1>
     <hr>  
     <button class ="grid-button" @click="showInventory=!(showInventory)">View Inventory</button>
-    <InventoryTableButton
+    <InventoryEditButton
       v-if="showInventory"
       @cancel="showInventory=!(showInventory)"/>
 
@@ -19,7 +19,7 @@
       <hr>  
 
       <button class ="grid-button" @click="showInventory=!(showInventory)">View Inventory</button>
-    <InventoryTableButton
+    <InventoryEditButton
       v-if="showInventory"
       @cancel="showInventory=!(showInventory)"/>
 
@@ -39,14 +39,14 @@
   </template>
   
   <script>
-  import InventoryTableButton from '../components/inventory/InventoryTableButton.vue';
+  import InventoryEditButton from '../components/inventory/InventoryEditButton.vue';
 import OrderStocksButton from '../components/inventory/OrderStocksButton.vue';
 import RemoveStocksButton from '../components/inventory/RemoveStocksButton.vue';
 
 
 export default {
   components: {
-    InventoryTableButton,
+    InventoryEditButton,
     OrderStocksButton,
     RemoveStocksButton
   },

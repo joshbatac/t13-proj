@@ -57,7 +57,6 @@ app.get("/inventory", (req, res) => {
     const inventory = results.map((item) => ({
       ID: item.ID,
       name: item.name,
-      supplierID: item.supplierID,
       currentStorage: item.currentStorage,
       maxStorage: item.maxStorage,
       price: item.price,

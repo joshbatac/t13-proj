@@ -30,7 +30,7 @@
             <tr v-for="order in orders" :key="order.orderID">
               <td>{{ order.orderID }}</td>
               <td>{{ formatDateString(order.orderDate) }}</td>
-              <td>{{ order.customerFirstName }} {{ order.customerLastName }}</td>
+              <td>{{ order.customerFirstName ? order.customerFirstName : 'Guest' }} {{ order.customerLastName }}</td>              
               <td>{{ order.products }}</td>
               <td>{{ order.totalAmount }}</td>
             </tr>
