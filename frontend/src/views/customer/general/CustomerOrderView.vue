@@ -31,6 +31,7 @@
         Welcome Back... {{ customerName }}!
         <br>
         <div class="belowWelcome" @click="customerInfoModBoolChange()">EDIT PROFILE</div> &nbsp; &nbsp;
+        <div class="belowWelcome" @click="this.viewOrders=!(this.viewOrders)">VIEW ORDERS</div> &nbsp; &nbsp;
         <div class="belowWelcome" @click="signOut"> SIGN OUT</div>
 
       </h1>
@@ -85,6 +86,13 @@
     @signUp = "addCustomer"
     />
 
+    <OrdersPopUp
+    v-if="viewOrders"
+    :customerID = "this.customerID"
+    @cancel = "this.viewOrders = !this.viewOrders"/>
+
+    
+
 
 
   </div>
@@ -96,7 +104,7 @@ import Basket from '../order-sending/Basket.vue';
 import CustomerInfoMod from '../customer-info/CustomerInfoMod.vue';
 import MemberSignUp from '../customer-info/MemberSignUp.vue';
 import MemberSignUpConfirm from '../customer-info/MemberSignUpConfirm.vue';
-
+import OrdersPopUp from './ordersPopUp.vue';
 import axios from 'axios';
 
 export default {
@@ -105,7 +113,8 @@ export default {
     Basket,
     CustomerInfoMod,
     MemberSignUp,
-    MemberSignUpConfirm
+    MemberSignUpConfirm,
+    OrdersPopUp
   },
 
   data() {
@@ -116,6 +125,7 @@ export default {
       customerInfoModBool: false,
       memberSignUpBool: false,
       showMSUC: false,
+      viewOrders: false,
 
       customerName: null,
       customerFName: null,

@@ -1,29 +1,31 @@
 <template>
     <div class="popup">
-        <div class="popup-overlay"></div>
-        <div class="popup-content">
-
-            <h1>
-                Employee Log In
-            </h1>
-
-            <div class="form-row">
-                <label for="employeeID" class="label">Employee ID:</label>
-                <input type="text" id="employeeID" placeholder="1234567890" class="input" v-model="employeeID"
-                    @input="numbersOnly" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" maxlength="10" required>
-            </div>
-
-            <div class="form-row">
-                <label for="password" class="label">Password:</label>
-                <input type="password" id="password" class="input" v-model="password" placeholder="Password" required>
-            </div>
-
-
-            <button @click="signIn()" class="confirm-button">Sign In</button>
-            <button @click="cancel()" class="cancel-button">Cancel</button>
-        </div>
+      <div class="popup-overlay"></div>
+      <div class="popup-content">
+  
+        <h1>
+          Employee Log In
+        </h1>
+  
+        <form>
+          <div class="form-row">
+            <label for="username" class="label">Employee ID:</label>
+            <input type="text" id="username" placeholder="1234567890" class="input" v-model="employeeID"
+              @input="numbersOnly" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" maxlength="10" required autocomplete="username">
+          </div>
+  
+          <div class="form-row">
+            <label for="password" class="label">Password:</label>
+            <input type="password" id="password" class="input" v-model="password" placeholder="Password"
+              autocomplete="new-password" required>
+          </div>
+        </form>
+  
+        <button @click="signIn()" class="confirm-button">Sign In</button>
+        <button @click="cancel()" class="cancel-button">Cancel</button>
+      </div>
     </div>
-</template>
+  </template>
 
 <script>
 import axios from 'axios';

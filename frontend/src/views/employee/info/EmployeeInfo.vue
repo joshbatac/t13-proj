@@ -12,7 +12,7 @@
         <p>Phone: {{ employeeInfo.Phone }}</p>
         <hr>
 
-            <button class="edit-button">Edit Info</button>
+            <button @click="this.$emit('update')" class="edit-button">Edit Info</button>
             <button @click="this.$emit('cancel')" class="cancel-button">Cancel</button>
             <button @click="this.$emit('signOut')" class="signout-button">Sign Out</button>
 
@@ -21,6 +21,7 @@
   </template>
   
   <script>
+  
   export default {
     props: {
       employeeInfo: Object,

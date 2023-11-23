@@ -33,7 +33,8 @@
       </div>
       
     
-      <div v-if="showSuccess"> <hr><h2>SUCCESS! Please Log Out and Log In to see changes</h2><hr>      <button @click="this.$emit('boolChange')" class="cancel-button">Go Back</button>
+      <div v-if="showSuccess"> <hr><h2>SUCCESS! Please Log Out and Log In to see changes</h2><hr>      
+        <button @click="this.$emit('boolChange')" class="cancel-button">Go Back</button>
 </div>
 
 
@@ -44,7 +45,7 @@
 
 
 <script>
-  import axios from 'axios';
+    import axios from 'axios';
   export default {
 
     props: {

@@ -35,9 +35,9 @@
 
       <EmployeeLoginPopUp v-if="showELP" @cancel="toggleELP" @success="successEL" />
 
-      <EmployeeInfoView v-if="showEInfo" @cancel="toggleEInfo" @signOut="signOut" :employeeInfo="this.employeeInfo" />
+      <EmployeeInfoView v-if="showEInfo" @cancel="toggleEInfo" @signOut="signOut" @update="toggleEUpdate" :employeeInfo="this.employeeInfo" />
 
-      <EmployeeUpdate v-if="showEUpdate" @cancel="toggleEUpdate" :employeeInfo="this.employeeInfo" />
+      <EmployeeUpdate v-if="showEUpdate" @cancel="toggleEUpdate"  :employeeInfo="this.employeeInfo" />
     </nav>
 
     <router-view />
@@ -79,6 +79,7 @@
       },
       toggleEUpdate() {
         this.showEUpdate = !this.showEUpdate;
+
       },
       signOut() {
         this.roleID = 0;

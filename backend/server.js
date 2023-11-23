@@ -138,12 +138,52 @@ app.get("/employees", (req, res) => {
   });
 });
 
+app.get('/customer-orders', (req, res) => {
+  const { startDate, endDate, customerId } = req.query; // Extract customer ID from the request query
+
+  // Validate startDate, endDate, and customerId presence
+  if (!startDate || !endDate || !customerId) {
+    res.status(400).json({
+      error: 'Invalid parameters. Please provide startDate, endDate, and customerId.'
+    });
+    return;
+  }
+
+  // Define the SQL query with GROUP_CONCAT to concatenate products
+  const query = `
+    SELECT
+      o.ID as orderID,
+      o.orderDate,
+      o.totalOwed,
+      c.fName as customerFirstName,
+      c.lName as customerLastName,
+      GROUP_CONCAT(CONCAT(i.name, ' (', oi.quantity, ' units)') SEPARATOR ', ') as products,
+      SUM(o.totalOwed) as totalAmount
+    FROM orders o
+    JOIN orderitems oi ON o.ID = oi.orderID
+    LEFT JOIN customers c ON o.customerID = c.ID
+    LEFT JOIN inventory i ON oi.inventoryID = i.ID
+    WHERE o.orderDate BETWEEN ? AND ?
+      AND c.ID = ?  
+    GROUP BY o.ID
+  `;
+
+  // Execute the SQL query
+  db.query(query, [startDate, endDate, customerId], (error, results) => {
+    if (error) {
+      console.error('Error executing SQL query:', error);
+      res.status(500).json({
+        error: 'Internal Server Error'
+      });
+    } else {
+      // Send the response back to the client
+      res.json(results);
+    }
+  });
+});
 
 app.get('/emp-orders', (req, res) => {
-  const {
-    startDate,
-    endDate
-  } = req.query;
+  const { startDate, endDate } = req.query;
 
   // Validate startDate and endDate presence
   if (!startDate || !endDate) {
@@ -153,8 +193,23 @@ app.get('/emp-orders', (req, res) => {
     return;
   }
 
-  // Define the SQL query based on the selected date range
-  const query = 'SELECT * FROM orders WHERE orderDate BETWEEN ? AND ?';
+  // Define the SQL query with GROUP_CONCAT to concatenate products
+  const query = `
+    SELECT
+      o.ID as orderID,
+      o.orderDate,
+      o.totalOwed,
+      c.fName as customerFirstName,
+      c.lName as customerLastName,
+      GROUP_CONCAT(CONCAT(i.name, ' (', oi.quantity, ' units)') SEPARATOR ', ') as products,
+      SUM(o.totalOwed) as totalAmount
+    FROM orders o
+    JOIN orderitems oi ON o.ID = oi.orderID
+    LEFT JOIN customers c ON o.customerID = c.ID
+    LEFT JOIN inventory i ON oi.inventoryID = i.ID
+    WHERE o.orderDate BETWEEN ? AND ?
+    GROUP BY o.ID
+  `;
 
   // Execute the SQL query
   db.query(query, [startDate, endDate], (error, results) => {
@@ -169,6 +224,7 @@ app.get('/emp-orders', (req, res) => {
     }
   });
 });
+
 
 app.post("/customer-update", (req, res) => {
   const {
@@ -194,6 +250,35 @@ app.post("/customer-update", (req, res) => {
         newFName,
         newLName,
         newPhone,
+      });
+    }
+  });
+});
+
+app.post("/employee-update", (req, res) => {
+  const {
+    ID,
+    newFName,
+    newLName,
+    newPhone,
+    newEmail
+  } = req.body;
+
+  const sqlUpdate = "UPDATE employees SET FirstName = ?, LastName = ?, Phone = ?, Email = ? WHERE ID = ?";
+
+  db.query(sqlUpdate, [newFName, newLName, newPhone, newEmail, ID], (updateError, updateResults) => {
+    if (updateError) {
+      console.error("Error updating employee:", updateError);
+      res.status(500).json({
+        error: "Error updating customer"
+      });
+    } else {
+      res.status(200).json({
+        message: "employee updated successfully",
+        newFName,
+        newLName,
+        newPhone,
+        newEmail
       });
     }
   });

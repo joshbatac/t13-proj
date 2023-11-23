@@ -3,55 +3,106 @@
         <div class="popup-overlay"></div>
         <div class="popup-content">
             <h1> EDIT PROFILE: </h1>
-
-            <hr>
+            <div v-if="!showSuccess">
+            
+                <hr>
             Current Name: {{ employeeInfo.FirstName }} {{ employeeInfo.LastName }}
             <br>
-            Current Phone #: {{ phoneNumber }}
+            Current Phone #: {{ employeeInfo.Phone }}
+            <br>
+            Current Email: {{ employeeInfo.Email }}
             <hr>
             <div class="form-row">
                 <label for="changeFName" class="label">New First Name:</label>
                 <input type="text" id="changeFName" :placeholder="this.employeeInfo.FirstName" class="input"
-                    v-model="newFName" @input="dataChanged">
+                    v-model="newFName" >
             </div>
 
             <div class="form-row">
                 <label for="changeLName" class="label">New Last Name: </label>
                 <input type="text" id="changeLName" :placeholder="this.employeeInfo.LastName" class="input"
-                    v-model="newLName" @input="dataChanged">
+                    v-model="newLName" >
 
             </div>
 
             <div class="form-row">
                 <label for="changePhoneNumber" class="label">New Phone #:</label>
-                <input type="text" id="changePhoneNumber" :placeholder="this.employeeInfo.Email" class="input"
-                    v-model="newPhone" @input="onInputChange">
+                <input type="text" id="changePhoneNumber" :placeholder="this.employeeInfo.Phone" class="input"
+                    v-model="newPhone" @input="limitInputTo10Digits">
 
             </div>
-            <button class="confirm-button" :disabled="!(this.newFName || this.newLName ||this.newPhone)"
+
+            <div class="form-row">
+                <label for="changeEmail" class="label">New Phone #:</label>
+                <input type="text" id="changeEmail" :placeholder="this.employeeInfo.Email" class="input"
+                    v-model="newEmail">
+
+            </div>
+
+
+            <button class="confirm-button" :disabled="!(this.newFName || this.newLName ||this.newPhone || this.newEmail)"
                 @click="confirm">Confirm</button>
             <button @click="this.$emit('cancel')" class="cancel-button">Go Back</button>
+            
+            </div>
+         
 
-
+            <div v-if ="showSuccess"> <hr><h2>SUCCESS! Please Log Out and Log In to see changes</h2><hr>      
+        <button @click="this.$emit('cancel')" class="cancel-button">Go Back</button>
+</div>
         </div>
     </div>
 </template>
 
 
 <script>
+  import axios from 'axios';
+
+
     export default {
         props: {
-            EmployeeInfo: Object
+            employeeInfo: Object
         },
         data() {
             return {
                 newFName: null,
                 newLName: null,
                 newPhone: null,
+                newEmail: null,
                 showConfirm: false,
+                showSuccess: false
             }
         },
         methods: {
+            limitInputTo10Digits() {
+        // Remove non-numeric characters and limit to 10 digits
+        this.newPhone = this.newPhone.replace(/\D/g, '').slice(0, 10);
+      },
+      async confirm() {
+        // Prepare data for the API request
+        const requestData = {
+            ID: this.employeeInfo.ID,
+            newFName: this.newFName || this.employeeInfo.FirstName,
+            newLName: this.newLName || this.employeeInfo.LastName,
+            newPhone: this.newPhone || this.employeeInfo.Phone,
+            newEmail: this.newEmail || this.employeeInfo.Email
+        }; 
+        console.log(this.newFName)
+
+
+        // Make a POST request to the "customer-update" API endpoint
+        axios.post('http://localhost:3000/employee-update', requestData)
+          .then(response => {
+            // Handle the API response as needed
+            console.log('API Response:', response.data);
+            this.showSuccess = true;
+          })
+          .catch(error => {
+            // Handle errors
+            console.error('API Error:', error);
+          });
+
+      },
 
         }
     }

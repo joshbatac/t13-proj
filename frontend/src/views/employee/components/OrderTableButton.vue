@@ -9,6 +9,11 @@
       <br>
       <flat-pickr v-model="dateRange" :config="datePickerConfig" @change="fetchOrders"></flat-pickr>
 
+      <!-- Display total profits here -->
+      <div v-if="orders.length > 0" class="total-profits">
+        <p>Total Profits: {{ calculateTotalProfits() }}</p>
+      </div>
+
       <!-- Display orders here -->
       <div v-if="orders.length > 0" class="table-container">
         <table class="orders-table">
@@ -16,14 +21,18 @@
             <tr>
               <th>Order ID</th>
               <th>Date</th>
-              <th>Amount</th>
+              <th>Customer</th>
+              <th>Products</th>
+              <th>Total Amount</th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="order in orders" :key="order.ID">
-              <td>{{ order.ID }}</td>
+            <tr v-for="order in orders" :key="order.orderID">
+              <td>{{ order.orderID }}</td>
               <td>{{ formatDateString(order.orderDate) }}</td>
-              <td>{{ order.totalOwed }}</td>
+              <td>{{ order.customerFirstName }} {{ order.customerLastName }}</td>
+              <td>{{ order.products }}</td>
+              <td>{{ order.totalAmount }}</td>
             </tr>
           </tbody>
         </table>
@@ -36,13 +45,11 @@
     </div>
   </div>
 </template>
-  
+
 <script>
 import axios from 'axios';
 import flatPickr from 'vue-flatpickr-component';
-import 'flatpickr/dist/flatpickr.css'; // Import the styles
-
-
+import 'flatpickr/dist/flatpickr.css';
 
 export default {
   components: {
@@ -50,8 +57,8 @@ export default {
   },
   data() {
     return {
-      dateRange: [], // Store selected date range here
-      orders: [], // Store fetched orders here
+      dateRange: [],
+      orders: [],
     };
   },
   computed: {
@@ -63,7 +70,6 @@ export default {
     },
   },
   mounted() {
-    // Fetch data when the component is mounted
     this.fetchOrders();
   },
   methods: {
@@ -73,14 +79,12 @@ export default {
     },
 
     async fetchOrders() {
-      console.log(this.dateRange)
-
-      if (this.dateRange.length != 0) {
+      if (this.dateRange.length !== 0) {
         try {
           const fetchOrdersResponse = await axios.get('http://localhost:3000/emp-orders', {
             params: {
               startDate: this.dateRange.slice(0, 10),
-              endDate: this.dateRange.slice(-10)
+              endDate: this.dateRange.slice(-10),
             },
           });
           this.orders = fetchOrdersResponse.data;
@@ -88,12 +92,15 @@ export default {
           console.error('Error fetching orders:', error);
         }
       }
+    },
 
+    calculateTotalProfits() {
+      return this.orders.reduce((total, order) => total + order.totalAmount, 0).toFixed(2);
     },
   },
 };
 </script>
-  
+
 <style scoped>
 h1 {
   border-radius: 8px;
@@ -204,6 +211,15 @@ h1 {
 .cancel-button:hover,
 .cancel-button:disabled {
   background-color: #7e3535;
+}
+
+.total-profits {
+  margin-top: 20px;
+}
+
+.total-profits p {
+  font-size: 18px;
+  font-weight: bold;
 }
 </style>
   
