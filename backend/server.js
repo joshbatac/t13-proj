@@ -493,6 +493,54 @@ app.post("/customer-insert", (req, res) => {
   );
 });
 
+app.post("/inventory-add", (req, res) => {
+  const { name, price, currentStorage, maxStorage } = req.body;
+  const sqlInsert = "INSERT INTO inventory (name, price, currentStorage, maxStorage) VALUES (?, ?, ?, ?)";
+
+  db.query(sqlInsert, [name, price, currentStorage, maxStorage], (insertError, insertResults) => {
+    if (insertError) {
+      console.error("Error adding item to inventory:", insertError);
+      res.status(500).json({
+        error: "Error adding item to inventory"
+      });
+    } else {
+      // Return the inserted row data (including the auto-generated ID)
+      const insertedItem = {
+        ID: insertResults.insertId,
+        name,
+        price,
+        currentStorage,
+        maxStorage,
+      };
+      res.status(200).json({
+        success: true,
+        message: "Item added to inventory successfully",
+        item: insertedItem,
+      });
+    }
+  });
+});
+
+app.delete("/inventory-delete/:itemId", (req, res) => {
+  const itemId = req.params.itemId;
+  const sqlDelete = "DELETE FROM inventory WHERE ID = ?";
+
+  db.query(sqlDelete, [itemId], (deleteError, deleteResults) => {
+    if (deleteError) {
+      console.error("Error removing item from inventory:", deleteError);
+      res.status(500).json({
+        error: "Error removing item from inventory"
+      });
+    } else {
+      res.status(200).json({
+        success: true,
+        message: "Item removed from inventory successfully",
+        itemId,
+      });
+    }
+  });
+});
+
 
 app.listen(3000, () => {
   console.log("Server is running on http://localhost:3000/");

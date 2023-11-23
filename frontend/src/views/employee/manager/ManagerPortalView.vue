@@ -2,7 +2,7 @@
   <div>
     <h1>Manager Portal</h1>
     <hr>  
-    <button class ="grid-button" @click="showInventory=!(showInventory)">View Inventory</button>
+    <button class ="grid-button" @click="showInventory=!(showInventory)">Add & Remove Inventory</button>
     <InventoryEditButton
       v-if="showInventory"
       @cancel="showInventory=!(showInventory)"/>
