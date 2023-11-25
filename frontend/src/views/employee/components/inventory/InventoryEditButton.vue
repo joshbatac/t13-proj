@@ -92,7 +92,7 @@
     },
     methods: {
       async fetchInventory() {
-        axios.get('http://localhost:3000/inventory')
+        axios.get('https://arcane-headland-88481-37b7cd6b0bc8.herokuapp.com/inventory')
           .then(response => {
             this.inventory = response.data.inventory;
           })
@@ -102,7 +102,7 @@
       },
       async fetchSuppliers() {
     try {
-      const response = await axios.get('http://localhost:3000/suppliers');
+      const response = await axios.get('https://arcane-headland-88481-37b7cd6b0bc8.herokuapp.com/suppliers');
       this.suppliers = response.data.suppliers;
     } catch (error) {
       console.error('Error fetching suppliers:', error);
@@ -110,7 +110,7 @@
   },
       async addItem() {
         try {
-          const response = await axios.post('http://localhost:3000/inventory-add', this.newItem);
+          const response = await axios.post('https://arcane-headland-88481-37b7cd6b0bc8.herokuapp.com/inventory-add', this.newItem);
           if (response.data.success) {
             // Item added successfully
             this.fetchInventory(); // Refresh inventory data after adding
@@ -127,7 +127,7 @@
 
       async removeItem(itemId) {
         try {
-          const response = await axios.delete(`http://localhost:3000/inventory-delete/${itemId}`);
+          const response = await axios.delete(`https://arcane-headland-88481-37b7cd6b0bc8.herokuapp.com/inventory-delete/${itemId}`);
           if (response.data.success) {
             // Item removed successfully
             this.fetchInventory(); // Refresh inventory data after removing

@@ -79,7 +79,7 @@
 
 
         // Make a POST request to the "customer-update" API endpoint
-        axios.post('http://localhost:3000/customer-update', requestData)
+        axios.post('https://arcane-headland-88481-37b7cd6b0bc8.herokuapp.com/customer-update', requestData)
           .then(response => {
             // Handle the API response as needed
             console.log('API Response:', response.data);

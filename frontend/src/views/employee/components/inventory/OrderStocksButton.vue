@@ -89,7 +89,7 @@
     },
     methods: {
       async fetchInventory() {
-        axios.get('http://localhost:3000/inventory')
+        axios.get('https://arcane-headland-88481-37b7cd6b0bc8.herokuapp.com/inventory')
           .then(response => {
             this.inventory = response.data.inventory;
           })
@@ -99,7 +99,7 @@
       },
       async updateStock() {
         try {
-            const inventoryUpdateResponse = await axios.post('http://localhost:3000/inventory-update', {
+            const inventoryUpdateResponse = await axios.post('https://arcane-headland-88481-37b7cd6b0bc8.herokuapp.com/inventory-update', {
               inventoryID: this.selectedItem,
               quantity: this.orderQuantity, // Subtract the sold quantity from the inventory
             });

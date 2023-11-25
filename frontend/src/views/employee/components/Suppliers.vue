@@ -64,7 +64,7 @@
     methods: {
       async fetchSuppliers() {
         try {
-          const response = await axios.get('http://localhost:3000/suppliers');
+          const response = await axios.get('https://arcane-headland-88481-37b7cd6b0bc8.herokuapp.com/suppliers');
           this.suppliers = response.data.suppliers;
         } catch (error) {
           console.error('Error fetching suppliers:', error);
@@ -73,7 +73,7 @@
   
       async addSupplier() {
         try {
-          const response = await axios.post('http://localhost:3000/suppliers-add', this.newSupplier);
+          const response = await axios.post('https://arcane-headland-88481-37b7cd6b0bc8.herokuapp.com/suppliers-add', this.newSupplier);
           if (response.data.success) {
             // Supplier added successfully
             this.resetNewItem(); // Clear the input fields
@@ -88,7 +88,7 @@
   
       async removeSupplier(supplierId) {
         try {
-          const response = await axios.delete(`http://localhost:3000/suppliers-delete/${supplierId}`);
+          const response = await axios.delete(`https://arcane-headland-88481-37b7cd6b0bc8.herokuapp.com/suppliers-delete/${supplierId}`);
           if (response.data.success) {
             // Supplier removed successfully
             this.fetchSuppliers(); // Refresh supplier data after removing

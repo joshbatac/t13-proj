@@ -80,7 +80,7 @@
             },
       async fetchCustomers() {
         try {
-          const response = await axios.get('http://localhost:3000/customers');
+          const response = await axios.get('https://arcane-headland-88481-37b7cd6b0bc8.herokuapp.com/customers');
           this.customers = response.data.customers;
         } catch (error) {
           console.error('Error fetching customers:', error);
@@ -89,7 +89,7 @@
   
       async addCustomer() {
         try {
-          const response = await axios.post('http://localhost:3000/customers-add', this.newCustomer);
+          const response = await axios.post('https://arcane-headland-88481-37b7cd6b0bc8.herokuapp.com/customers-add', this.newCustomer);
           if (response.data.success) {
             // Customer added successfully
             this.resetNewItem(); // Clear the input fields
@@ -104,7 +104,7 @@
   
       async removeCustomer(customerId) {
         try {
-          const response = await axios.delete(`http://localhost:3000/customers-delete/${customerId}`);
+          const response = await axios.delete(`https://arcane-headland-88481-37b7cd6b0bc8.herokuapp.com/customers-delete/${customerId}`);
           if (response.data.success) {
             // Customer removed successfully
             this.fetchCustomers(); // Refresh customer data after removing

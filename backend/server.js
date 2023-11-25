@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require("express");
 const mysql = require("mysql");
 const app = express();
+const cors = require('cors');
 
 const db = mysql.createPool({
   connectionLimit: 10,
@@ -22,6 +23,7 @@ db.getConnection((err, connection) => {
   connection.release();
 });
 
+app.use(cors());
 app.use(express.json());
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
@@ -912,7 +914,8 @@ app.delete("/suppliers-delete/:supplierId", (req, res) => {
   });
 });
 
+const PORT = process.env.PORT || 3000;
 
-app.listen(3000, () => {
-  console.log("Server is running on http://localhost:3000/");
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
 });

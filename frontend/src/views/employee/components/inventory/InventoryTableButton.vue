@@ -47,7 +47,7 @@ export default {
   },
   methods: {
     async fetchInventory() {
-      axios.get('http://localhost:3000/inventory')
+      axios.get('https://arcane-headland-88481-37b7cd6b0bc8.herokuapp.com/inventory')
         .then(response => {
           this.inventory = response.data.inventory;
         })

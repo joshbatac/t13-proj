@@ -71,7 +71,7 @@
     methods: {
       async removeStock() {
         try {
-            const inventoryUpdateResponse = await axios.post('http://localhost:3000/inventory-update', {
+            const inventoryUpdateResponse = await axios.post('https://arcane-headland-88481-37b7cd6b0bc8.herokuapp.com/inventory-update', {
               inventoryID: this.selectedItem,
               quantity: -(this.removeQuantity), // Subtract the sold quantity from the inventory
             });
@@ -85,7 +85,7 @@
       },
       async fetchInventory() {
       try {
-        const response = await axios.get('http://localhost:3000/inventory');
+        const response = await axios.get('https://arcane-headland-88481-37b7cd6b0bc8.herokuapp.com/inventory');
         this.inventory = response.data.inventory;
       } catch (error) {
         console.error('Error fetching inventory:', error);

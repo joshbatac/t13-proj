@@ -106,7 +106,7 @@
             },
             async fetchEmployees() {
                 try {
-                    const response = await axios.get('http://localhost:3000/employees');
+                    const response = await axios.get('https://arcane-headland-88481-37b7cd6b0bc8.herokuapp.com/employees');
                     this.employees = response.data.employees;
                 } catch (error) {
                     console.error('Error fetching employees:', error);
@@ -115,7 +115,7 @@
 
             async fetchRoles() {
                 try {
-                    const response = await axios.get('http://localhost:3000/roles');
+                    const response = await axios.get('https://arcane-headland-88481-37b7cd6b0bc8.herokuapp.com/roles');
                     this.fetched_roles = response.data.roles;
                     console.log(this.fetched_roles);
                 } catch (error) {
@@ -125,7 +125,7 @@
 
             async addEmployee() {
                 try {
-                    const response = await axios.post('http://localhost:3000/employees-add', this.newEmployee);
+                    const response = await axios.post('https://arcane-headland-88481-37b7cd6b0bc8.herokuapp.com/employees-add', this.newEmployee);
                     console.log(this.newEmployee)
                     if (response.data.success) {
                         // Employee added successfully
@@ -142,7 +142,7 @@
 
             async removeEmployee(employeeId) {
                 try {
-                    const response = await axios.delete(`http://localhost:3000/employees-delete/${employeeId}`);
+                    const response = await axios.delete(`https://arcane-headland-88481-37b7cd6b0bc8.herokuapp.com/employees-delete/${employeeId}`);
                     if (response.data.success) {
                         // Employee removed successfully
                         this.fetchEmployees(); // Refresh employee data after removing

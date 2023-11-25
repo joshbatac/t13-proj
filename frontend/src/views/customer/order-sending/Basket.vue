@@ -95,7 +95,7 @@ export default {
 
     async checkout(pt) {
       try {
-        const orderResponse = await axios.post('http://localhost:3000/orders-insert', {// Isnsert the order into the Orders table
+        const orderResponse = await axios.post('https://arcane-headland-88481-37b7cd6b0bc8.herokuapp.com/orders-insert', {// Isnsert the order into the Orders table
           customerID: this.customerID,
           orderDate: new Date().toISOString().split('T')[0], // Get current date in YYYY-MM-DD format
           totalOwed: this.calculateOriginalRunningTotal(),
@@ -110,7 +110,7 @@ export default {
 
         this.items.forEach(async ([item, quantity]) => {
           try {
-            const orderItemResponse = await axios.post('http://localhost:3000/orderitems-insert', {
+            const orderItemResponse = await axios.post('https://arcane-headland-88481-37b7cd6b0bc8.herokuapp.com/orderitems-insert', {
               orderID: _orderID,
               inventoryID: item.ID, //
               quantity: quantity,
@@ -124,7 +124,7 @@ export default {
         // Updated inventory to remove the correct quantity from the current storage
         this.items.forEach(async ([item, quantity]) => {
           try {
-            const inventoryUpdateResponse = await axios.post('http://localhost:3000/inventory-update', {
+            const inventoryUpdateResponse = await axios.post('https://arcane-headland-88481-37b7cd6b0bc8.herokuapp.com/inventory-update', {
               inventoryID: item.ID,
               quantity: -quantity, // Subtract the sold quantity from the inventory
             });

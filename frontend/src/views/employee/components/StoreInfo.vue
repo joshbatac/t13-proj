@@ -64,7 +64,7 @@
     methods: {
       async fetchStoreInfo() {
         try {
-          const response = await axios.get('http://localhost:3000/storeinfo');
+          const response = await axios.get('https://arcane-headland-88481-37b7cd6b0bc8.herokuapp.com/storeinfo');
           this.storeInfo = response.data.storeInfo[0];
         } catch (error) {
           console.error('Error fetching store information:', error);
@@ -85,7 +85,7 @@
       },
       async updateStoreInfo() {
         try {
-    const response = await axios.put('http://localhost:3000/storeinfo-update', {
+    const response = await axios.put('https://arcane-headland-88481-37b7cd6b0bc8.herokuapp.com/storeinfo-update', {
       storeID: this.storeInfo.store_id,
     newStoreName: this.newStoreName,
     newDescription: this.newStoreDesc,

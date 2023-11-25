@@ -73,7 +73,7 @@ export default {
       console.log(this.dateRange.slice(0, 10), this.dateRange.slice(-10))
       if (this.dateRange.length !== 0) {
         try {
-          const response = await axios.get('http://localhost:3000/product-report', {
+          const response = await axios.get('https://arcane-headland-88481-37b7cd6b0bc8.herokuapp.com/product-report', {
             params: {
               startDate: this.dateRange.slice(0, 10),
               endDate: this.dateRange.slice(-10),

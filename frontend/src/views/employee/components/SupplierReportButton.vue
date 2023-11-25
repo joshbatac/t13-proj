@@ -74,7 +74,7 @@
       async fetchSupplierReport() {
         if (this.dateRange.length !== 0) {
           try {
-            const response = await axios.get('http://localhost:3000/supplier-report', {
+            const response = await axios.get('https://arcane-headland-88481-37b7cd6b0bc8.herokuapp.com/supplier-report', {
               params: {
                 startDate: this.dateRange.slice(0, 10),
                 endDate: this.dateRange.slice(-10),
