@@ -39,11 +39,19 @@
         <label for="itemPrice">Price:</label>
         <input type="number" v-model="newItem.price" id="itemPrice" />
         <br>
+        <label for="buyPrice">Buy Price:</label>
+        <input type="number" v-model="newItem.buyPrice" id="buyPrice" />
+        <br>
         <label for="currentStorage">Current Storage:</label>
         <input type="number" v-model="newItem.currentStorage" id="currentStorage" />
         <br>
         <label for="maxStorage">Max Storage:</label>
         <input type="number" v-model="newItem.maxStorage" id="maxStorage" />
+        <br>
+        <label for="supplier">Supplier:</label>
+        <select v-model="newItem.supplierID" id="supplier" >
+          <option v-for="supplier in suppliers" :key="supplier.ID" :value="supplier.ID">{{ supplier.name }}</option>
+        </select>
 
         <hr>
         <button @click="addItem"
@@ -67,14 +75,20 @@
         newItem: {
           name: '',
           price: 0,
+          buyPrice: 0,
           currentStorage: 0,
           maxStorage: 0,
+          supplierID: null,
         },
+        suppliers: [], // Store fetched suppliers here
+
       };
     },
     mounted() {
       // Fetch data when the component is mounted
       this.fetchInventory();
+      this.fetchSuppliers(); // Fetch suppliers when the component is mounted
+
     },
     methods: {
       async fetchInventory() {
@@ -86,6 +100,14 @@
             console.error('Error fetching inventory:', error);
           });
       },
+      async fetchSuppliers() {
+    try {
+      const response = await axios.get('http://localhost:3000/suppliers');
+      this.suppliers = response.data.suppliers;
+    } catch (error) {
+      console.error('Error fetching suppliers:', error);
+    }
+  },
       async addItem() {
         try {
           const response = await axios.post('http://localhost:3000/inventory-add', this.newItem);
@@ -124,8 +146,10 @@
         this.newItem = {
           name: '',
           price: 0,
+          buyPrice: 0,
           currentStorage: 0,
           maxStorage: 0,
+          SupplierID: 0,
         };
       },
 
@@ -284,7 +308,26 @@
     transition: background-color 0.3s, color 0.3s;
   }
 
-  .remove-button:hover {
-    background-color: #7e3535;
-  }
+  #supplier {
+        width: 75%;
+        padding: 8px;
+        margin-bottom: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        appearance: none;
+        /* Remove default arrow */
+        background-color: #fff;
+    }
+
+    #supplier:hover {
+        border-color: #42b983;
+    }
+
+    #supplier:focus {
+        outline: none;
+        /* Remove focus outline */
+        border-color: #42b983;
+        box-shadow: 0 0 5px rgba(66, 185, 131, 0.7);
+    }
+
 </style>

@@ -60,8 +60,10 @@ app.get("/inventory", (req, res) => {
       currentStorage: item.currentStorage,
       maxStorage: item.maxStorage,
       price: item.price,
+      buyPrice: item.buyPrice,
       lowStorage: item.lowStorage,
       zeroStorage: item.zeroStorage,
+      supplierID: item.supplierID
     }));
 
     res.json({
@@ -84,6 +86,19 @@ app.get("/orders", (req, res) => {
   });
 });
 
+app.get("/suppliers", (req, res) => {
+  db.query("SELECT * FROM suppliers", (error, results) => {
+    if (error) {
+      console.error("Error in query:", error);
+      res.status(500).send("Error in database query");
+      return;
+    }
+    res.json({
+      suppliers: results
+    });
+  });
+});
+
 app.get("/customers", (req, res) => {
   db.query("SELECT * FROM customers", (error, results) => {
     if (error) {
@@ -96,6 +111,35 @@ app.get("/customers", (req, res) => {
     });
   });
 });
+
+
+app.get("/suppliers", (req, res) => {
+  db.query("SELECT * FROM suppliers", (error, results) => {
+    if (error) {
+      console.error("Error in query:", error);
+      res.status(500).send("Error in database query");
+      return;
+    }
+    res.json({
+      suppliers: results
+    });
+  });
+});
+
+
+app.get("/storeinfo", (req, res) => {
+  db.query("SELECT * FROM storeinfo", (error, results) => {
+    if (error) {
+      console.error("Error in query:", error);
+      res.status(500).send("Error in database query");
+      return;
+    }
+    res.json({
+      storeInfo: results
+    });
+  });
+});
+
 
 
 
@@ -165,7 +209,11 @@ app.get("/roles", (req, res) => {
 });
 
 app.get('/customer-orders', (req, res) => {
-  const { startDate, endDate, customerId } = req.query; // Extract customer ID from the request query
+  const {
+    startDate,
+    endDate,
+    customerId
+  } = req.query; // Extract customer ID from the request query
 
   // Validate startDate, endDate, and customerId presence
   if (!startDate || !endDate || !customerId) {
@@ -209,7 +257,10 @@ app.get('/customer-orders', (req, res) => {
 });
 
 app.get('/emp-orders', (req, res) => {
-  const { startDate, endDate } = req.query;
+  const {
+    startDate,
+    endDate
+  } = req.query;
 
   // Validate startDate and endDate presence
   if (!startDate || !endDate) {
@@ -221,20 +272,26 @@ app.get('/emp-orders', (req, res) => {
 
   // Define the SQL query with GROUP_CONCAT to concatenate products
   const query = `
-    SELECT
-      o.ID as orderID,
-      o.orderDate,
-      o.totalOwed,
-      c.fName as customerFirstName,
-      c.lName as customerLastName,
-      GROUP_CONCAT(CONCAT(i.name, ' (', oi.quantity, ' units)') SEPARATOR ', ') as products,
-      SUM(o.totalOwed) as totalAmount
-    FROM orders o
-    JOIN orderitems oi ON o.ID = oi.orderID
-    LEFT JOIN customers c ON o.customerID = c.ID
-    LEFT JOIN inventory i ON oi.inventoryID = i.ID
-    WHERE o.orderDate BETWEEN ? AND ?
-    GROUP BY o.ID
+  SELECT
+  o.ID as orderID,
+  o.orderDate,
+  o.totalOwed,
+  c.fName as customerFirstName,
+  c.lName as customerLastName,
+  GROUP_CONCAT(CONCAT(i.name, ' (', oi.quantity, ' units)') SEPARATOR ', ') as products,
+  SUM(oi.quantity * i.price) as totalAmount
+FROM
+  orders o
+JOIN
+  orderitems oi ON o.ID = oi.orderID
+LEFT JOIN
+  customers c ON o.customerID = c.ID
+LEFT JOIN
+  inventory i ON oi.inventoryID = i.ID
+  WHERE o.orderDate BETWEEN ? AND ?
+GROUP BY
+  o.ID;
+
   `;
 
   // Execute the SQL query
@@ -252,7 +309,10 @@ app.get('/emp-orders', (req, res) => {
 });
 
 app.get('/product-report', (req, res) => {
-  const { startDate, endDate } = req.query;
+  const {
+    startDate,
+    endDate
+  } = req.query;
 
   // Validate startDate and endDate presence
   if (!startDate || !endDate) {
@@ -265,23 +325,71 @@ app.get('/product-report', (req, res) => {
   // Define the SQL query to get product purchase frequency and total quantity purchased
   const query = `
   SELECT
-    i.ID AS ProductID,
-    i.name AS ProductName,
-    COUNT(oi.ID) AS PurchaseFrequency,
-    SUM(oi.quantity) AS TotalQuantityPurchased
-  FROM
-    inventory i
-  LEFT JOIN
-    orderitems oi ON i.ID = oi.inventoryID
-  JOIN
-    orders o ON oi.orderID = o.ID
-  WHERE
-    o.orderDate BETWEEN ? AND ?
-  GROUP BY
-    i.ID, i.name
-  ORDER BY
-    PurchaseFrequency DESC;
-`;
+  i.name AS ProductName,
+  SUM(oi.quantity) AS TotalQuantitySold,
+  SUM(i.price * oi.quantity) AS TotalProfit
+FROM
+  inventory i
+LEFT JOIN
+  orderitems oi ON i.ID = oi.inventoryID
+JOIN
+  orders o ON oi.orderID = o.ID
+WHERE
+  o.orderDate BETWEEN ? AND ?
+GROUP BY
+  i.ID, i.name
+ORDER BY
+  TotalProfit DESC;
+  `;
+
+  // Execute the SQL query
+  db.query(query, [startDate, endDate], (error, results) => {
+    if (error) {
+      console.error('Error executing SQL query:', error);
+      res.status(500).json({
+        error: 'Internal Server Error'
+      });
+    } else {
+      // Send the response back to the client
+      res.json(results);
+    }
+  });
+});
+
+app.get('/supplier-report', (req, res) => {
+  const { startDate, endDate } = req.query;
+
+  // Validate startDate and endDate presence
+  if (!startDate || !endDate) {
+    res.status(400).json({
+      error: 'Invalid parameters. Please provide startDate and endDate.'
+    });
+    return;
+  }
+
+  // Define the SQL query to get supplier-wise profit and quantity sold
+  const query = `
+  SELECT
+  s.name AS SupplierName,
+  GROUP_CONCAT(DISTINCT i.name ORDER BY i.name ASC) AS SuppliedInventory,
+  SUM(oi.quantity) AS TotalQuantitySold,
+  SUM(i.price * oi.quantity - i.buyPrice * oi.quantity) AS TotalProfit
+FROM
+  suppliers s
+LEFT JOIN
+  inventory i ON s.ID = i.supplierID
+LEFT JOIN
+  orderitems oi ON i.ID = oi.inventoryID
+LEFT JOIN
+  orders o ON oi.orderID = o.ID
+WHERE
+  o.orderDate BETWEEN ? AND ?
+GROUP BY
+  s.ID, s.name
+ORDER BY
+  TotalProfit DESC;
+
+  `;
 
   // Execute the SQL query
   db.query(query, [startDate, endDate], (error, results) => {
@@ -378,6 +486,38 @@ app.post("/inventory-update", (req, res) => {
     }
   });
 });
+
+app.put("/storeinfo-update", (req, res) => {
+  const {
+    storeID,
+    newStoreName,
+    newDescription,
+    newContactEmail,
+    newContactPhone
+  } = req.body;
+
+  const sqlUpdate = "UPDATE storeInfo SET store_name = ?, description = ?, contact_email = ?, contact_phone = ? WHERE store_id = ?";
+
+  db.query(sqlUpdate, [newStoreName, newDescription, newContactEmail, newContactPhone, storeID], (updateError, updateResults) => {
+    if (updateError) {
+      console.error("Error updating store information:", updateError);
+      res.status(500).json({
+        error: "Error updating store information"
+      });
+    } else {
+      res.status(200).json({
+        success: true,
+        message: "Store information updated successfully",
+        storeID,
+        newStoreName,
+        newDescription,
+        newContactEmail,
+        newContactPhone,
+      });
+    }
+  });
+});
+
 
 app.post("/orders-insert", (req, res) => {
   const {
@@ -563,10 +703,17 @@ app.post("/customer-insert", (req, res) => {
 });
 
 app.post("/inventory-add", (req, res) => {
-  const { name, price, currentStorage, maxStorage } = req.body;
-  const sqlInsert = "INSERT INTO inventory (name, price, currentStorage, maxStorage) VALUES (?, ?, ?, ?)";
+  const {
+    name,
+    price,
+    buyPrice,
+    currentStorage,
+    maxStorage,
+    supplierID
+  } = req.body;
+  const sqlInsert = "INSERT INTO inventory (name, price, buyPrice, currentStorage, maxStorage, supplierID) VALUES (?, ?, ?, ?, ?, ?)";
 
-  db.query(sqlInsert, [name, price, currentStorage, maxStorage], (insertError, insertResults) => {
+  db.query(sqlInsert, [name, price, buyPrice, currentStorage, maxStorage, supplierID], (insertError, insertResults) => {
     if (insertError) {
       console.error("Error adding item to inventory:", insertError);
       res.status(500).json({
@@ -578,8 +725,10 @@ app.post("/inventory-add", (req, res) => {
         ID: insertResults.insertId,
         name,
         price,
+        buyPrice,
         currentStorage,
         maxStorage,
+        supplierID
       };
       res.status(200).json({
         success: true,
@@ -611,7 +760,14 @@ app.delete("/inventory-delete/:itemId", (req, res) => {
 });
 
 app.post("/employees-add", (req, res) => {
-  const { FirstName, LastName, RoleID, Email, Phone, Password } = req.body;
+  const {
+    FirstName,
+    LastName,
+    RoleID,
+    Email,
+    Phone,
+    Password
+  } = req.body;
   const sqlInsert = "INSERT INTO employees (FirstName, LastName,RoleID, Email, Phone, Password) VALUES (?, ?, ?, ?, ?, ?)";
 
   db.query(sqlInsert, [FirstName, LastName, RoleID, Email, Phone, Password], (insertError, insertResults) => {
@@ -661,7 +817,11 @@ app.delete("/employees-delete/:employeeId", (req, res) => {
 });
 
 app.post("/customers-add", (req, res) => {
-  const { fName, lName, phone_num } = req.body;
+  const {
+    fName,
+    lName,
+    phone_num
+  } = req.body;
   const sqlInsert = "INSERT INTO customers (fName, lName, phone_num) VALUES (?, ?, ?)";
 
   db.query(sqlInsert, [fName, lName, phone_num], (insertError, insertResults) => {
@@ -702,6 +862,51 @@ app.delete("/customers-delete/:customerId", (req, res) => {
         success: true,
         message: "Customer removed successfully",
         customerId,
+      });
+    }
+  });
+});
+
+app.post("/suppliers-add", (req, res) => {
+  const { name } = req.body;
+  const sqlInsert = "INSERT INTO suppliers (name) VALUES (?)";
+
+  db.query(sqlInsert, [name], (insertError, insertResults) => {
+    if (insertError) {
+      console.error("Error adding supplier:", insertError);
+      res.status(500).json({
+        error: "Error adding supplier"
+      });
+    } else {
+      // Return the inserted row data (including the auto-generated ID)
+      const insertedSupplier = {
+        ID: insertResults.insertId,
+        name
+      };
+      res.status(200).json({
+        success: true,
+        message: "Supplier added successfully",
+        supplier: insertedSupplier,
+      });
+    }
+  });
+});
+
+app.delete("/suppliers-delete/:supplierId", (req, res) => {
+  const supplierId = req.params.supplierId;
+  const sqlDelete = "DELETE FROM suppliers WHERE ID = ?";
+
+  db.query(sqlDelete, [supplierId], (deleteError, deleteResults) => {
+    if (deleteError) {
+      console.error("Error removing supplier:", deleteError);
+      res.status(500).json({
+        error: "Error removing supplier"
+      });
+    } else {
+      res.status(200).json({
+        success: true,
+        message: "Supplier removed successfully",
+        supplierId,
       });
     }
   });

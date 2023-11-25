@@ -88,6 +88,7 @@ export default {
             },
           });
           this.orders = fetchOrdersResponse.data;
+          console.log(fetch)
         } catch (error) {
           console.error('Error fetching orders:', error);
         }

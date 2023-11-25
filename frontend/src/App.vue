@@ -3,7 +3,6 @@
     <nav>
       <div class="nav-center">
         <router-link to="/" class="a">Home</router-link> |
-        <router-link to="/about" class="a">About</router-link> |
         <router-link to="/customer-order" class="a">Shop Here!</router-link>
       </div>
 

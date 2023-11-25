@@ -2,35 +2,36 @@
   <div class="popup">
     <div class="popup-overlay"></div>
     <div class="popup-content">
-      <h1>Product Purchase Report</h1>
+      <h1>Product Frequency Report</h1>
 
       <br>
       <label for="datepicker">Select Date Range:</label>
       <br>
       <flat-pickr v-model="dateRange" :config="datePickerConfig" @change="fetchProductReport"></flat-pickr>
 
-      <!-- Display total quantity purchased here -->
+      <!-- Display total quantity purchased and total profit here -->
       <div v-if="productReport.length > 0" class="total-quantity">
-        <p>Total Quantity Purchased: {{ calculateTotalQuantity() }}</p>
+        <p>Total Quantity Sold: {{ calculateTotalQuantity() }}</p>
+        <p>Total Profit: {{ calculateTotalProfit() }}</p>
       </div>
 
       <!-- Display product report here -->
-      <div v-if=" productReport.length > 0" class="table-container">
+      <div v-if="productReport.length > 0" class="table-container">
         <table class="product-report-table">
           <thead>
             <tr>
-              <th>Product ID</th>
               <th>Product Name</th>
-              <th>Purchase Frequency</th>
-              <th>Total Quantity Purchased</th>
+              <th>Total Profit</th>
+              <th>Total Sold</th>
+
             </tr>
           </thead>
           <tbody>
             <tr v-for="product in productReport" :key="product.ProductID">
-              <td>{{ product.ProductID }}</td>
               <td>{{ product.ProductName }}</td>
-              <td>{{ product.PurchaseFrequency }}</td>
-              <td>{{ product.TotalQuantityPurchased }}</td>
+              <td>{{ product.TotalProfit }}</td>
+              <td>{{ product.TotalQuantitySold }}</td>
+
             </tr>
           </tbody>
         </table>
@@ -87,8 +88,11 @@ export default {
     },
 
     calculateTotalQuantity() {
-  return this.productReport ? this.productReport.reduce((total, product) => total + product.TotalQuantityPurchased, 0) : 0;
-}
+  return this.productReport ? this.productReport.reduce((total, product) => total + product.TotalQuantitySold, 0) : 0;
+},
+calculateTotalProfit() {
+      return this.productReport ? this.productReport.reduce((total, product) => total + product.TotalProfit, 0).toFixed(2) : 0;
+    },
 
   },
 };
