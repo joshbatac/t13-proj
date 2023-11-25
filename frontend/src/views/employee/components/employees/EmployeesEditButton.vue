@@ -14,7 +14,7 @@
                             <th>Last Name</th>
                             <th>Email</th>
                             <th>Phone</th>
-                            <th class="action-cell">Action</th> <!-- Added class for action cell -->
+                            <th class="action-cell">Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -22,7 +22,7 @@
                             <td>{{ employee.ID }}</td>
                             <td>{{ employee.FirstName }}</td>
                             <td>{{ employee.LastName }}</td>
-                            <td class="email-cell">{{ employee.Email }}</td> <!-- Added class for email cell -->
+                            <td class="email-cell">{{ employee.Email }}</td>
                             <td>{{ employee.Phone }}</td>
                             <td><button @click="removeEmployee(employee.ID)" class="remove-button">Remove</button></td>
                         </tr>
@@ -30,25 +30,25 @@
                 </table>
             </div>
 
-            <hr>
+            <hr />
+
             <div>
                 <h3>ADD EMPLOYEE</h3>
-
                 <label for="firstName">First Name:</label>
                 <input type="text" v-model="newEmployee.FirstName" id="firstName" />
-                <br>
+                <br />
                 <label for="lastName">Last Name:</label>
                 <input type="text" v-model="newEmployee.LastName" id="lastName" />
-                <br>
+                <br />
                 <label for="email">Email:</label>
                 <input type="email" v-model="newEmployee.Email" id="email" />
-                <br>
+                <br />
                 <label for="phone">Phone:</label>
                 <input type="tel" v-model="newEmployee.Phone" id="phone" @input="limitInputTo10Digits" />
 
-                <label for="password">Password: </label> 
+                <label for="password">Password: </label>
                 <input :type="showPassword ? 'text' : 'password'" v-model="newEmployee.Password" id="password" />
-                <br>
+                <br />
                 <button @click="togglePasswordVisibility">{{ showPassword ? 'Hide' : 'Show' }}</button>
 
                 <label for="role">Role:</label>
@@ -56,12 +56,20 @@
                     <option v-for="role in fetched_roles" :key="role.ID" :value="role.ID">{{ role.name }}</option>
                 </select>
 
-                <hr>
-                <button @click="addEmployee"
-                    :disabled="newEmployee.FirstName === '' || newEmployee.LastName === '' 
-                    || newEmployee.Email === '' || newEmployee.Phone === '' || newEmployee.Phone.length < 10"
-                    class="confirm-button">Add Employee</button>
-                <button @click="$emit('cancel')" class="cancel-button">Exit</button>
+                <hr />
+                <div class="bottom-buttons">
+
+                    <button @click="addEmployee"
+                        :disabled="newEmployee.FirstName === '' || newEmployee.LastName === '' || newEmployee.Email === '' || newEmployee.Phone === '' || newEmployee.Phone.length < 10"
+                        class="confirm-button">
+                        Add Employee
+                    </button>
+                    <button @click="$emit('cancel')" class="cancel-button">Exit</button>
+
+                </div>
+
+
+
             </div>
         </div>
     </div>
@@ -190,6 +198,7 @@
         height: 100%;
         background-color: rgba(0, 0, 0, 0.5);
     }
+
     .popup-content {
         width: 50%;
         background-color: #fff;
@@ -198,15 +207,18 @@
         text-align: center;
         z-index: 1;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        overflow-y: auto; /* Add overflow-y to enable scrolling */
+        overflow-y: auto;
+        /* Add overflow-y to enable scrolling */
     }
 
     /* ... your existing styles ... */
 
     /* Add a max-height and overflow-y to the add employee section */
-    .popup-content > div {
-        max-height: 400px; /* Adjust the max height as per your preference */
-        overflow-y: auto; /* Add overflow-y to enable scrolling */
+    .popup-content>div {
+        max-height: 400px;
+        /* Adjust the max height as per your preference */
+        overflow-y: auto;
+        /* Add overflow-y to enable scrolling */
     }
 
     /* Style for the dropdown menu */
@@ -235,18 +247,23 @@
     }
 
     .employee-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-    table-layout: auto; /* Use auto to adjust cell width based on content */
-}
-.employee-table td {
-    border: 1px solid #ddd;
-    padding-top: 10px; /* Adjust top padding */
-    padding-bottom: 10px; /* Adjust bottom padding */
-    text-align: center;
-    white-space: nowrap; /* Prevent content from wrapping */
-}
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        table-layout: auto;
+        /* Use auto to adjust cell width based on content */
+    }
+
+    .employee-table td {
+        border: 1px solid #ddd;
+        padding-top: 10px;
+        /* Adjust top padding */
+        padding-bottom: 10px;
+        /* Adjust bottom padding */
+        text-align: center;
+        white-space: nowrap;
+        /* Prevent content from wrapping */
+    }
 
     .employee-table th {
         background-color: #f2f2f2;
@@ -254,7 +271,7 @@
         top: 0;
         z-index: 1;
     }
-    
+
     .confirm-button,
     .cancel-button {
         width: 25%;
@@ -337,22 +354,34 @@
     }
 
     #role {
-    width: 75%;
-    padding: 8px;
-    margin-bottom: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    appearance: none; /* Remove default arrow */
-    background-color: #fff;
-}
+        width: 75%;
+        padding: 8px;
+        margin-bottom: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        appearance: none;
+        /* Remove default arrow */
+        background-color: #fff;
+    }
 
-#role:hover {
-    border-color: #42b983;
-}
+    #role:hover {
+        border-color: #42b983;
+    }
 
-#role:focus {
-    outline: none; /* Remove focus outline */
-    border-color: #42b983;
-    box-shadow: 0 0 5px rgba(66, 185, 131, 0.7);
-}
+    #role:focus {
+        outline: none;
+        /* Remove focus outline */
+        border-color: #42b983;
+        box-shadow: 0 0 5px rgba(66, 185, 131, 0.7);
+    }
+
+    .bottom-buttons {
+        align-items: center;
+        position: sticky;
+        bottom: 0;
+        background-color: #fff;
+        padding: 10px;
+        border-top: 1px solid #ddd;
+        z-index: 2;
+    }
 </style>

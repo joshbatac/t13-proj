@@ -23,18 +23,37 @@
       v-if="showEmployees"
       @cancel="showEmployees=!(showEmployees)"/>
 
+      <button class ="grid-button" @click="showCustomers=!(showCustomers)">Add & Remove Customers</button>
+    <CustomerEditButton
+      v-if="showCustomers"
+      @cancel="showCustomers=!(showCustomers)"/>
       <hr>
+
+      <button class ="grid-button" @click="showOrders=!(showOrders)">Past Orders</button>
+    <OrderTableButton
+      v-if="showOrders"
+      @cancel="showOrders=!(showOrders)"/>
+
+      <button class ="grid-button" @click="showProductReport=!(showProductReport)">Product Frequency Reports</button>
+    <ProductReportButton
+      v-if="showProductReport"
+      @cancel="showProductReport=!(showProductReport)"/>
 
   </div>
   </template>
   
   <script>
+
   import InventoryEditButton from '../components/inventory/InventoryEditButton.vue';
 import OrderStocksButton from '../components/inventory/OrderStocksButton.vue';
 import RemoveStocksButton from '../components/inventory/RemoveStocksButton.vue';
 
 import EmployeesEditButton from '../components/employees/EmployeesEditButton.vue';
 
+import CustomerEditButton from '../components/customers/CustomerEditButton.vue';
+
+import OrderTableButton from '../components/OrderTableButton.vue';
+import ProductReportButton from '../components/ProductReportButton.vue';
 
 
 export default {
@@ -42,17 +61,23 @@ export default {
     InventoryEditButton,
     OrderStocksButton,
     RemoveStocksButton,
-    EmployeesEditButton
+    EmployeesEditButton,
+    CustomerEditButton,
+    OrderTableButton,
+    ProductReportButton,
+    
   },
     data() {
         return {
           showInventory: false,
           showOrderStock: false,
           showRemoveStock: false,
+          showCustomers: false,
 
           showEmployees: false,
 
-          showOrders: false
+          showOrders: false,
+          showProductReport: false,
         }
     }
 }

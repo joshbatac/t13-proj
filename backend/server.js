@@ -84,6 +84,20 @@ app.get("/orders", (req, res) => {
   });
 });
 
+app.get("/customers", (req, res) => {
+  db.query("SELECT * FROM customers", (error, results) => {
+    if (error) {
+      console.error("Error in query:", error);
+      res.status(500).send("Error in database query");
+      return;
+    }
+    res.json({
+      customers: results
+    });
+  });
+});
+
+
 
 app.get("/orderitems", (req, res) => {
   db.query("SELECT * FROM orderitems", (error, results) => {
@@ -237,6 +251,52 @@ app.get('/emp-orders', (req, res) => {
   });
 });
 
+app.get('/product-report', (req, res) => {
+  const { startDate, endDate } = req.query;
+
+  // Validate startDate and endDate presence
+  if (!startDate || !endDate) {
+    res.status(400).json({
+      error: 'Invalid parameters. Please provide startDate and endDate.'
+    });
+    return;
+  }
+
+  // Define the SQL query to get product purchase frequency and total quantity purchased
+  const query = `
+  SELECT
+    i.ID AS ProductID,
+    i.name AS ProductName,
+    COUNT(oi.ID) AS PurchaseFrequency,
+    SUM(oi.quantity) AS TotalQuantityPurchased
+  FROM
+    inventory i
+  LEFT JOIN
+    orderitems oi ON i.ID = oi.inventoryID
+  JOIN
+    orders o ON oi.orderID = o.ID
+  WHERE
+    o.orderDate BETWEEN ? AND ?
+  GROUP BY
+    i.ID, i.name
+  ORDER BY
+    PurchaseFrequency DESC;
+`;
+
+  // Execute the SQL query
+  db.query(query, [startDate, endDate], (error, results) => {
+    if (error) {
+      console.error('Error executing SQL query:', error);
+      res.status(500).json({
+        error: 'Internal Server Error'
+      });
+    } else {
+      // Send the response back to the client
+      res.json(results);
+    }
+  });
+});
+
 
 app.post("/customer-update", (req, res) => {
   const {
@@ -296,7 +356,6 @@ app.post("/employee-update", (req, res) => {
   });
 });
 
-
 app.post("/inventory-update", (req, res) => {
   const {
     inventoryID,
@@ -319,7 +378,6 @@ app.post("/inventory-update", (req, res) => {
     }
   });
 });
-
 
 app.post("/orders-insert", (req, res) => {
   const {
@@ -357,7 +415,6 @@ app.post("/orders-insert", (req, res) => {
     }
   );
 });
-
 
 app.post("/orderitems-insert", (req, res) => {
   const {
@@ -430,7 +487,6 @@ app.post('/employee-login', (req, res) => {
     }
   });
 });
-
 
 app.post("/check-phone-num", (req, res) => {
   const {
@@ -604,6 +660,52 @@ app.delete("/employees-delete/:employeeId", (req, res) => {
   });
 });
 
+app.post("/customers-add", (req, res) => {
+  const { fName, lName, phone_num } = req.body;
+  const sqlInsert = "INSERT INTO customers (fName, lName, phone_num) VALUES (?, ?, ?)";
+
+  db.query(sqlInsert, [fName, lName, phone_num], (insertError, insertResults) => {
+    if (insertError) {
+      console.error("Error adding customer:", insertError);
+      res.status(500).json({
+        error: "Error adding customer"
+      });
+    } else {
+      // Return the inserted row data (including the auto-generated ID)
+      const insertedCustomer = {
+        ID: insertResults.insertId,
+        fName,
+        lName,
+        phone_num,
+      };
+      res.status(200).json({
+        success: true,
+        message: "Customer added successfully",
+        customer: insertedCustomer,
+      });
+    }
+  });
+});
+
+app.delete("/customers-delete/:customerId", (req, res) => {
+  const customerId = req.params.customerId;
+  const sqlDelete = "DELETE FROM customers WHERE ID = ?";
+
+  db.query(sqlDelete, [customerId], (deleteError, deleteResults) => {
+    if (deleteError) {
+      console.error("Error removing customer:", deleteError);
+      res.status(500).json({
+        error: "Error removing customer"
+      });
+    } else {
+      res.status(200).json({
+        success: true,
+        message: "Customer removed successfully",
+        customerId,
+      });
+    }
+  });
+});
 
 
 app.listen(3000, () => {
