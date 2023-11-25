@@ -47,7 +47,7 @@
                 <input type="tel" v-model="newEmployee.Phone" id="phone" @input="limitInputTo10Digits" />
 
                 <label for="password">Password: </label> 
-                <input :type="showPassword ? 'text' : 'password'" v-model="newEmployee.password" id="password" />
+                <input :type="showPassword ? 'text' : 'password'" v-model="newEmployee.Password" id="password" />
                 <br>
                 <button @click="togglePasswordVisibility">{{ showPassword ? 'Hide' : 'Show' }}</button>
 
@@ -80,7 +80,7 @@
                     RoleID: 1,
                     Email: '',
                     Phone: '',
-                    password: '',
+                    Password: '',
                 },
                 fetched_roles: [],
                 showPassword: false,
@@ -118,10 +118,12 @@
             async addEmployee() {
                 try {
                     const response = await axios.post('http://localhost:3000/employees-add', this.newEmployee);
+                    console.log(this.newEmployee)
                     if (response.data.success) {
                         // Employee added successfully
                         this.resetNewItem(); // Clear the input fields
                         this.fetchEmployees(); // Refresh employee data after adding
+                        console.log(response.data.message)
                     } else {
                         console.log('Error adding employee:', response.data.message);
                     }

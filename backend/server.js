@@ -555,10 +555,10 @@ app.delete("/inventory-delete/:itemId", (req, res) => {
 });
 
 app.post("/employees-add", (req, res) => {
-  const { FirstName, LastName, RoleID, Email, Phone, password } = req.body;
+  const { FirstName, LastName, RoleID, Email, Phone, Password } = req.body;
   const sqlInsert = "INSERT INTO employees (FirstName, LastName,RoleID, Email, Phone, Password) VALUES (?, ?, ?, ?, ?, ?)";
 
-  db.query(sqlInsert, [FirstName, LastName, RoleID, Email, Phone, password], (insertError, insertResults) => {
+  db.query(sqlInsert, [FirstName, LastName, RoleID, Email, Phone, Password], (insertError, insertResults) => {
     if (insertError) {
       console.error("Error adding employee:", insertError);
       res.status(500).json({
@@ -573,7 +573,7 @@ app.post("/employees-add", (req, res) => {
         RoleID,
         Email,
         Phone,
-        password
+        Password
       };
       res.status(200).json({
         success: true,
