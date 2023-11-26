@@ -140,7 +140,7 @@
   }
 
   .router-link-exact-active {
-    color: #42b983;
+    color: #b94242;
   }
 
   .employee-buttons-container {
