@@ -32,7 +32,7 @@
               <td>{{ formatDateString(order.orderDate) }}</td>
               <td>{{ order.customerFirstName ? order.customerFirstName : 'Guest' }} {{ order.customerLastName }}</td>              
               <td>{{ order.products }}</td>
-              <td>{{ order.totalAmount }}</td>
+              <td>{{ order.totalOwed }}</td>
             </tr>
           </tbody>
         </table>
