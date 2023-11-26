@@ -1,32 +1,25 @@
-# T13 Project
-Welcome to the T13 Project repository! This project is divided into frontend and backend components.
+# Team 13 System - Login Information
 
-## Getting Started
-Follow these steps to set up and run the project:
+Welcome to Team 13's system! Below are the login credentials for employees and customers.
 
-### Clone the Repository
-bash  
-git clone https://github.com/joshbatac/t13-proj.git  
-cd t13-proj  
+## Employee Login:
 
+### Employee Admin:
+- **ID:**  1
+- **Password:** Admin
 
-### node_modules installs
-Frontend Setup  
-cd frontend > npm install > npm run serve
-  
-Backend Setup  
-cd backend > npm install 
-  
-OR just copy and paste this in terminal after git cloning  
-cd backend && npm install && cd .. && cd frontend && npm install
+### Employee Cashier:
+- **ID:** 2
+- **Password:** Cashier
 
+### Employee Restocker:
+- **ID:** EMP003
+- **Password:** Restocker
 
-### local hosting
-Running Both Frontend and Backend Together  
-If you want to run both the frontend and backend simultaneously, you can open two terminal windows, one for each  
-  
-Backend Terminal  
-cd backend > node server.js  
-  
-Frontend Terminal  
-cd frontennd > npm run serve
+## Customer Login:
+
+### Customer John Doe:
+- **Phone #:** 1112223333
+
+### Customer Jane Doe:
+- **Phone #:** 4445556666
