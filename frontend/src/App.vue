@@ -102,7 +102,7 @@
   }
 
   h1 {
-    background-color: #42b983;
+    background-color: #b94242;
     color: #ffffff;
     padding: 30px;
     margin: 0;
