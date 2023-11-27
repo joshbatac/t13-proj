@@ -30,7 +30,7 @@
                 <td>{{ order.orderID }}</td>
               <td>{{ formatDateString(order.orderDate) }}</td>
               <td>{{ order.products }}</td>
-              <td>{{ order.totalAmount }}</td>
+              <td>{{ order.totalOwed }}</td>
 
         </tr>
       </tbody>

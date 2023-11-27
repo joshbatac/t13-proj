@@ -24,6 +24,7 @@ db.getConnection((err, connection) => {
 });
 
 app.use(cors());
+
 app.use(express.json());
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
@@ -227,21 +228,21 @@ app.get('/customer-orders', (req, res) => {
 
   // Define the SQL query with GROUP_CONCAT to concatenate products
   const query = `
-    SELECT
-      o.ID as orderID,
-      o.orderDate,
-      o.totalOwed,
-      c.fName as customerFirstName,
-      c.lName as customerLastName,
-      GROUP_CONCAT(CONCAT(i.name, ' (', oi.quantity, ' units)') SEPARATOR ', ') as products,
-      SUM(o.totalOwed) as totalAmount
-    FROM orders o
-    JOIN orderitems oi ON o.ID = oi.orderID
-    LEFT JOIN customers c ON o.customerID = c.ID
-    LEFT JOIN inventory i ON oi.inventoryID = i.ID
-    WHERE o.orderDate BETWEEN ? AND ?
-      AND c.ID = ?  
-    GROUP BY o.ID
+  SELECT
+  o.ID as orderID,
+  o.orderDate,
+  o.totalOwed,
+  c.fName as customerFirstName,
+  c.lName as customerLastName,
+  GROUP_CONCAT(CONCAT(i.name, ' (', oi.quantity, ' units)') SEPARATOR ', ') as products,
+  SUM(oi.quantity * i.price) as totalAmount
+FROM orders o
+JOIN orderitems oi ON o.ID = oi.orderID
+LEFT JOIN customers c ON o.customerID = c.ID
+LEFT JOIN inventory i ON oi.inventoryID = i.ID
+WHERE o.orderDate BETWEEN ? AND ?
+  AND c.ID = ? 
+GROUP BY o.ID
   `;
 
   // Execute the SQL query
@@ -292,7 +293,9 @@ LEFT JOIN
   inventory i ON oi.inventoryID = i.ID
   WHERE o.orderDate BETWEEN ? AND ?
 GROUP BY
-  o.ID;
+  o.ID
+  ORDER BY
+  o.orderDate;
 
   `;
 
